@@ -1,0 +1,9 @@
+{
+  "foodWasteDensityKgPerL": null,
+  "binSizeL": null,
+  "binFillRate": null,
+  "methaneFactorMin": null,
+  "methaneFactorMax": null,
+  "onsiteCapacityKgPerWeek": null,
+  "onsiteSpaceRequirementM2": null
+}
