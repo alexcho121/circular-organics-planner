@@ -61,6 +61,16 @@ def calculate_bin_count(
         waste_per_collection_kg
         / capacity_per_bin_kg
     )
+#매립에서 빠지는 폐기물 양 × 메탄 배출계수, 최소/최대 범위 계산
+def calculate_methane_reduction(
+    diverted_waste_kg,
+    methane_factor_min,
+    methane_factor_max
+):
+    return {
+        "min": diverted_waste_kg * methane_factor_min,
+        "max": diverted_waste_kg * methane_factor_max
+    }
 
 
 def calculate_offsite(profile, assumptions, rules):
@@ -86,9 +96,20 @@ def build_implementation_plan(
 ):
     pass
 
-
+#입력 받기, 입력값 검사, assumptions.json 읽기, waste profile 만들기, 결과 반환
 def run_engine(input_data):
-    pass
+    validate_input(input_data)
+
+    assumptions = load_assumptions()
+
+    profile = build_waste_profile(
+        input_data,
+        assumptions
+    )
+
+    return {
+        "wasteProfile": profile
+    }
 
 # input값이 이상하거나 없을경우 계산전에 막음
 def validate_input(input_data):
