@@ -13,7 +13,25 @@ def load_assumptions():
         return json.load(file)
 
 def build_waste_profile(input_data, assumptions):
-    pass
+    return {
+        "buildingType": input_data.get("buildingType"),
+        "tenantCount": input_data.get("tenantCount"),
+        "weeklyOrganicWasteKg": input_data.get(
+            "weeklyOrganicWasteKg"
+        ),
+        "availableSpaceM2": input_data.get(
+            "availableSpaceM2"
+        ),
+        "collectionsPerWeek": input_data.get(
+            "collectionsPerWeek"
+        ),
+        "currentWasteCost": input_data.get(
+            "currentWasteCost"
+        ),
+        "onsiteReuseAvailable": input_data.get(
+            "onsiteReuseAvailable"
+        )
+    }
 
 
 def calculate_offsite(profile, assumptions, rules):
