@@ -60,3 +60,32 @@ def build_implementation_plan(
 
 def run_engine(input_data):
     pass
+
+# input값이 이상하거나 없을경우 계산전에 막음
+def validate_input(input_data):
+    required_fields = [
+        "weeklyOrganicWasteKg",
+        "availableSpaceM2",
+        "collectionsPerWeek"
+    ]
+
+    for field in required_fields:
+        if field not in input_data:
+            raise ValueError(
+                f"Missing required field: {field}"
+            )
+
+    if input_data["weeklyOrganicWasteKg"] < 0:
+        raise ValueError(
+            "Weekly organic waste cannot be negative"
+        )
+
+    if input_data["availableSpaceM2"] < 0:
+        raise ValueError(
+            "Available space cannot be negative"
+        )
+
+    if input_data["collectionsPerWeek"] <= 0:
+        raise ValueError(
+            "Collections per week must be greater than zero"
+        )
