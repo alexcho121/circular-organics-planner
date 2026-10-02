@@ -1,3 +1,17 @@
+import json
+from pathlib import Path
+
+
+def load_assumptions():
+    file_path = (
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "assumptions.json"
+    )
+
+    with open(file_path, "r") as file:
+        return json.load(file)
+
 def build_waste_profile(input_data, assumptions):
     pass
 
