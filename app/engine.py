@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 
@@ -32,6 +33,34 @@ def build_waste_profile(input_data, assumptions):
             "onsiteReuseAvailable"
         )
     }
+
+#bin 하나가 실제로 몇 kg 담을 수 있는지 계산
+#↓
+#수거 1회 사이에 발생하는 음식물 kg 계산
+#↓
+#필요한 bin 개수 계산
+def calculate_bin_count(
+    weekly_waste_kg,
+    collections_per_week,
+    bin_size_l,
+    density_kg_per_l,
+    fill_rate
+):
+    capacity_per_bin_kg = (
+        bin_size_l
+        * density_kg_per_l
+        * fill_rate
+    )
+
+    waste_per_collection_kg = (
+        weekly_waste_kg
+        / collections_per_week
+    )
+
+    return math.ceil(
+        waste_per_collection_kg
+        / capacity_per_bin_kg
+    )
 
 
 def calculate_offsite(profile, assumptions, rules):
@@ -89,3 +118,4 @@ def validate_input(input_data):
         raise ValueError(
             "Collections per week must be greater than zero"
         )
+
