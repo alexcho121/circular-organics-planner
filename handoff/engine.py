@@ -47,8 +47,10 @@ MANDATE_NOTES = [
     "Guidance only. Confirm with NSW EPA or your council.",
 ]
 
-PROCESSING_WARNING = ("Check approvals and that processed output is resource-recovered, not landfilled "
-                      "(dehydrated food waste is not compost).")
+PROCESSING_WARNING = ("Check approvals for the exact device. If you use the NSW on-site pre-processing "
+                      "exemption, its conditions include sending the processed output to off-site resource "
+                      "recovery (NSW EPA FOGO exemptions, S15 and S22). Our climate numbers assume the output "
+                      "is recovered. Dehydrated food waste is not compost.")
 ONSITE_WARNING = ("Regulatory and safety check required (approvals, ventilation, fire safety, trade waste) "
                   "before buying equipment.")
 

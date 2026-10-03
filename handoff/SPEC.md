@@ -1,6 +1,6 @@
 # Circular Organics Planner: build handoff (spec v1)
 
-For Yeongjun, from 19:00 Sat 3 Oct. Everything here runs today: `pytest -q` gives 17 passed.
+For Youngjun, from 19:00 Sat 3 Oct. Everything here runs today: `pytest -q` gives 17 passed.
 Status: **approved by Yuna, Sat 3 Oct 16:15 (spec v1 frozen).** Changes after the freeze go through Yuna and the Decision Log.
 
 ## 0. Approved decisions (applied in this pack)
@@ -21,12 +21,18 @@ Status: **approved by Yuna, Sat 3 Oct 16:15 (spec v1 frozen).** Changes after th
 | `SPEC.md` | This page |
 | `assumptions.csv` | Every number the app uses (39 rows: key, min/base/max, unit, source, confidence). Change numbers here, never in code |
 | `engine.py` | Reference engine: pure Python, no UI. Use it as is, port it, or check your own code against it |
+| `app.py` | Streamlit app, first version: Input, Compare, Plan, How it works, Data & sources, About. Run `streamlit run app.py` |
+| `requirements.txt` | Packages for local runs and Streamlit Community Cloud |
 | `test_engine.py` | 17 acceptance tests (`pytest -q`) |
 | `test_cases.md` | The same tests in plain words |
 | `examples.json` | Inputs for the two demo buildings |
 | `example_outputs.json` | Full outputs for both demo buildings; the frontend can build against these tonight |
 
-## 2. How to plug it in (Q2: pick one)
+## 2. How to plug it in (decided: Streamlit)
+
+Run locally: `pip install -r requirements.txt`, then `streamlit run app.py`. Tested on Python 3.9 + Streamlit 1.50 (the newest Streamlit that Python 3.9 can install) and Python 3.13 + Streamlit 1.65. For screen recording, `streamlit run app.py --client.toolbarMode minimal` hides the Deploy button. Deploy (optional, nice to have): Streamlit Community Cloud from the GitHub repo, main file `handoff/app.py`.
+
+Other options, kept for reference:
 
 - **Streamlit:** `from engine import load_config, plan_building`, then `result = plan_building(inputs, load_config())`, then render.
 - **Web frontend + API:** one endpoint, `POST /api/plan`. Body = input JSON (section 3), response = output JSON (section 4). Until the API is up, the frontend uses `example_outputs.json` as mock data.
@@ -97,8 +103,8 @@ Pick the highest candidate (On-site > Hybrid > Off-site), then apply R4. `what_w
 
 Honest point for the pitch: in Case 2, off-site composting saves slightly more net GHG than Hybrid. Hybrid is recommended because it halves bin lifts and uses the output locally. The tool shows both numbers.
 
-## 7. Still open
+## 7. Changes after the freeze and still open
 
-- Q2: which stack, and who builds the frontend
-- Yeonsu to confirm: the mixed-bin branch (3,960 / 1,980 L) and the single 660 L bin rule for 2030
-- Q6: deadline time zone; Q7: deploy a live link
+- **Added Sat 3 Oct, 18:55 (approved by Yuna):** Waste Stream Profile table (kg/week per tenant and total, estimated or measured) and an "Output use" row on the Compare page; the processing warning now describes off-site resource recovery as a condition of the on-site pre-processing exemption (Yeonsu's fact-check, S15 and S22), not a general duty.
+- **Open (Youngjun):** Plan page metrics are cut off in narrow windows; the roadmap table's Year column is squeezed.
+- Closed since the freeze: Yeonsu confirmed the mixed-bin branch (3,960 / 1,980 L) and the 2030 single 660 L bin rule; the deadline is Sun 21:00 phone time; a live demo link is optional (D31).
