@@ -1,4 +1,6 @@
-# Circular Organics Planner: build handoff (spec v1)
+# Circular Organics Planner: original build handoff (spec v1)
+
+This document records the team's original specification and decisions. The current entry point and file layout are in the root [README](../README.md); paths below describe the original handoff package.
 
 For Youngjun, from 19:00 Sat 3 Oct. Everything here runs today: `pytest -q` gives 17 passed.
 Status: **approved by Yuna, Sat 3 Oct 16:15 (spec v1 frozen).** Changes after the freeze go through Yuna and the Decision Log.

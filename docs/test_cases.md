@@ -1,6 +1,6 @@
 # Test cases (spec v1)
 
-Run `pytest -q` in this folder: 17 tests, all passing on the reference engine. Boundaries are inclusive (W = T1 counts as reaching T1). Unless stated: no local use, Low budget, 0 m² on-site space, waste room 10 m².
+Run `python -m pytest -q` from the repository root: 17 tests on the production engine. Boundaries are inclusive (W = T1 counts as reaching T1). Unless stated: no local use, Low budget, 0 m² on-site space, waste room 10 m².
 
 | ID | Case | Input (key values) | Expected result |
 |---|---|---|---|

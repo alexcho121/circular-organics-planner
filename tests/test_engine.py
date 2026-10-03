@@ -4,7 +4,7 @@ Each case states the input in plain words and the expected result. The same case
 in test_cases.md for the team. Boundaries are inclusive: W = T1 counts as reaching T1.
 """
 import pytest
-from engine import load_config, plan_building, mandate_check, impact
+from app.engine import load_config, plan_building, mandate_check, impact
 
 CFG = load_config()
 
