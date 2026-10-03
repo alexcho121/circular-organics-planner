@@ -1,0 +1,40 @@
+key,item,unit,min,base,max,source_id,source_url,confidence,notes,used_in
+mandate_2026_l_week,"Mandate from 1 Jul 2026, all bins 240 L",L/week,3840,3840,3840,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,16 x 240 L,mandate
+mandate_2026_other_l_week,"Mandate from 1 Jul 2026, other bin combinations",L/week,3960,3960,3960,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,e.g. 6 x 660 L,mandate
+mandate_2028_l_week,"Mandate from 1 Jul 2028, all bins 240 L",L/week,1920,1920,1920,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,8 x 240 L,mandate
+mandate_2028_other_l_week,"Mandate from 1 Jul 2028, other bin combinations",L/week,1980,1980,1980,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,e.g. 3 x 660 L,mandate
+mandate_2030_l_week,"Mandate from 1 Jul 2030, any combination",L/week,720,720,720,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,3 x 240 L or other combinations,mandate
+mandate_2030_single_bin_l,"Mandate from 1 Jul 2030, single bin",L,660,660,660,S3,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout,H,any single general waste bin of 660 L or more,mandate
+t1_hybrid_kg_week,Hybrid threshold (R2),kg/week,300,500,700,S7;S9,https://closedloop.com.au/composters/;https://www.uts.edu.au/case-studies/food-scraps-soil-conditioner-processing-food-waste-onsite-uts,L,"proposed rule threshold, not economic break-even",rules
+t2_onsite_kg_week,On-site threshold (R3),kg/week,1000,1500,3000,S7;S9,https://closedloop.com.au/composters/;https://www.uts.edu.au/case-studies/food-scraps-soil-conditioner-processing-food-waste-onsite-uts,L,proposed rule threshold; size equipment to captured input and peak days,rules
+space_moderate_min_m2,Moderate space minimum,m2,4,6,10,S6,https://www.powertechenergy.com.au/foodie,L,includes access and storage; not a mandated minimum,rules
+space_ample_min_m2,Ample space minimum,m2,12,15,25,S6,https://www.powertechenergy.com.au/foodie,L,larger equipment and clearance; site design required,rules
+r5_high_collections_per_week,R5 note trigger,collections/week,5,5,5,,,L,team assumption (Yuna): more than the 4/week base schedule,rules
+waste_cafe_kg_week,"Cafe, medium",kg/week,50,100,200,,,L,"illustrative, 7 operating days; never an NSW average",profile
+waste_restaurant_kg_week,"Restaurant, medium",kg/week,100,200,400,,,L,"illustrative, 7 days",profile
+waste_quick_service_kg_week,"Quick service, medium",kg/week,75,150,300,,,L,"illustrative, 7 days",profile
+waste_bakery_kg_week,"Bakery, medium",kg/week,50,100,250,,,L,"illustrative, 7 days",profile
+waste_grocery_kg_week,"Grocery, medium",kg/week,150,300,750,,,L,"medium food retailer, not a full supermarket",profile
+size_factor_small,Small tenant multiplier,ratio,0.4,0.5,0.75,,,L,medium = 1.0,profile
+size_factor_large,Large tenant multiplier,ratio,1.5,2,3,,,L,not an observed NSW distribution,profile
+capture_rate,Share of food waste correctly separated,ratio,0.4,0.7,0.9,,,L,proposed separation performance,plan;impact
+food_density_kg_per_l,Food organics density,kg/L,0.343,0.514,1.029,S2,https://www.epa.nsw.gov.au/sites/default/files/2024p45622023ciwasteauditreport.pdf,M,"audit report p107, kg/m3 / 1000",plan
+bin_fill_fraction,Bin geometric fill,ratio,0.2,0.45,0.7,S4;S5,https://sulo.com.au/product/240-litre-container/;https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,L,proposed,plan
+max_days_between_collections,Longest gap between collections,days,1,2,7,S13,https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout/business-mandates-councils,L,2-day operating proposal; mandate needs at least weekly,plan
+organics_bin_size_l,Organics bin size,L,240,240,240,S4,https://sulo.com.au/product/240-litre-container/,H,team-selected 240 L model,plan
+bin_footprint_m2_240l,240 L bin footprint,m2,0.427,0.427,0.427,S4,https://sulo.com.au/product/240-litre-container/,H,"0.585 x 0.730 m, no manoeuvring allowance",plan
+included_service_weight_kg,Included service weight per bin,kg/bin,60,60,60,S5,https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,M,surcharge threshold used as a planning cap (team assumption),plan
+bin_filling_limit_kg,Bin filling limit,kg/bin,96,96,96,S4,https://sulo.com.au/product/240-litre-container/,H,specified SULO model; not a safe lifting limit,plan
+hybrid_onsite_share,Hybrid: share of captured food processed on site,ratio,0.25,0.5,0.75,,,L,"share of captured input, not mass reduction",plan;impact
+onsite_onsite_share,On-site: share of captured food processed on site,ratio,0.7,0.9,1.0,,,L,residual route still needed,plan;impact
+ef_landfill_t_per_t,Landfill net GHG,t CO2e/t,0.557,1.296,2.031,S1,https://www.epa.nsw.gov.au/sites/default/files/organics-processing-technology-emissions-2023.pdf,M,"appendix table 1 p37, net life cycle",impact
+ef_offsite_processing_t_per_t,Off-site composting net GHG,t CO2e/t,0.0088,0.0222,0.0226,S1,https://www.epa.nsw.gov.au/sites/default/files/organics-processing-technology-emissions-2023.pdf,M,appendix table 2 p38,impact
+ef_onsite_processing_t_per_t,On-site dehydration route net GHG,t CO2e/t,0.0788,0.5116,1.2761,S1,https://www.epa.nsw.gov.au/sites/default/files/organics-processing-technology-emissions-2023.pdf,M,"appendix table 4 p39, includes residue composting",impact
+ch4_landfill_kg_per_t,Landfill methane (gross component),kg CH4/t,30,52.5,75,S1,https://www.epa.nsw.gov.au/sites/default/files/organics-processing-technology-emissions-2023.pdf,M,840/1470/2100 kg CO2e per t divided by GWP 28,impact
+price_lift_1x_aud,"Collection price per bin lift, weekly",AUD/lift,42.042,42.042,42.042,S5,https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,M,"Sydney 240 L non-butcher, ex GST, includes disposal",cost
+price_lift_2x_aud,"Collection price per bin lift, 2 per week",AUD/lift,38.22,38.22,38.22,S5,https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,M,as above,cost
+price_lift_3x_aud,"Collection price per bin lift, 3 per week",AUD/lift,36.036,36.036,36.036,S5,https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,M,as above,cost
+price_lift_4plus_aud,"Collection price per bin lift, 4+ per week",AUD/lift,33.852,33.852,33.852,S5,https://waster.com.au/product/240-litre-organic-waste-bin-service-food-waste-bin/,M,as above,cost
+equipment_small_aud,Small on-site unit budget,AUD,30000,60000,100000,S8,https://www.epa.nsw.gov.au/Working-together/Grants/business-recycling/bin-trim-rebates-program,L,25 to 100 kg/day allowance; not a quote,cost;budget
+equipment_large_aud,Larger on-site system budget,AUD,100000,250000,500000,S10,https://www.environment.nsw.gov.au/funding-and-support/nsw-environmental-trust/grants-available/organics-infrastructure/stream-2-business-organics-recycling/grants-awarded-and-project-summaries,L,project budget only; not a quote,cost;budget
+onsite_operating_aud_week,On-site operating budget,AUD/week,52,258.83,611,S6,https://www.powertechenergy.com.au/foodie,L,energy + labour + maintenance scenarios,cost
