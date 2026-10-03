@@ -178,9 +178,7 @@ def example_picker():
                                      else "Shopping centre food court"),
             label_visibility="collapsed",
         )
-        if st.button("Load example"):
-            load_example(choice)
-            st.rerun()
+        st.button("Load example", on_click=load_example, args=(choice,))
         st.caption("Examples use illustrative data.")
 
 
@@ -309,30 +307,35 @@ def mandate_banner(mandate):
     if mandate["status_code"] == "unknown":
         st.info(mandate["status_text"])
         return
-    message = (f"**NSW FOGO status: {mandate['status_text']}** · "
-               f"general-waste capacity {mandate['capacity_l_week']:,.0f} L/week")
+    message = f"**NSW FOGO status · {mandate['status_text']}**"
     (st.warning if mandate["status_code"] == "covered_2026" else st.info)(message)
+
+
+def mandate_details(mandate):
     with st.expander("NSW mandate details and exemptions"):
+        if mandate["capacity_l_week"] is not None:
+            st.write(f"General-waste capacity: **{mandate['capacity_l_week']:,.0f} L/week**")
+            if mandate["status_code"] != "below":
+                st.write(f"Relevant threshold: **{mandate['threshold_l_week']:,.0f} L/week**")
         st.markdown("\n".join(f"- {note}" for note in mandate["notes"]))
 
 
-def comparison_cards(result):
-    columns = st.columns(3, gap="medium")
-    for column, pathway in zip(columns, PATHWAYS):
+def simple_comparison(result):
+    rows = []
+    for pathway in PATHWAYS:
         item = result["comparison"][pathway]
-        with column:
-            with st.container(border=True):
-                title = LABELS[pathway]
-                if pathway == result["recommendation"]["pathway"]:
-                    title += " · Recommended"
-                st.markdown(f"**{title}**")
-                st.write(f"{item['onsite_kg_week']:,.0f} kg on-site / {item['offsite_kg_week']:,.0f} kg off-site per week")
-                st.caption(f"Space: {item['space']} · Effort: {item['effort']}")
-                bin_word = "bin" if item["bins"] == 1 else "bins"
-                st.write(f"{item['bins']} {bin_word} · {item['collections_per_week']} collections/week")
-                st.write(f"Collection: ${item['collection_cost_aud_week']:,.0f}/week (indicative)")
-                st.caption(f"Landfill methane avoided: {item['ch4_avoided_kg_year']['base']:,.0f} kg CH₄/year")
-                st.caption(f"Net GHG saving: {item['net_ghg_t_year']['base']:,.1f} t CO₂e/year")
+        rows.append({
+            "Pathway": LABELS[pathway] +
+            (" · Recommended" if pathway == result["recommendation"]["pathway"] else ""),
+            "Waste split": (f"{item['onsite_kg_week']:,.0f} on-site / "
+                            f"{item['offsite_kg_week']:,.0f} off-site kg/week"),
+            "Bins": f"{item['bins']} × {item['bin_size_l']} L",
+            "Collections": f"{item['collections_per_week']}/week",
+            "Space": item["space"],
+            "Effort": item["effort"],
+            "Collection cost": f"${item['collection_cost_aud_week']:,.0f}/week",
+        })
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
 
 
 def full_comparison(result, local_use):
@@ -416,25 +419,32 @@ def scroll_to_top():
         )
 
 
-def results_page(result):
+def pathway_summary(pathway):
+    return {
+        "offsite": "Separate captured food waste and send it to an off-site composting service.",
+        "hybrid": "Process part of the captured food waste on site and send the remainder to off-site FOGO.",
+        "onsite": "Process most captured food waste on site, with FOGO collection for the remainder.",
+    }[pathway]
+
+
+def overview_tab(result):
     rec, plan = result["recommendation"], result["plan"]
-    if st.session_state.pop("scroll_to_result", False):
-        scroll_to_top()
-    with st.container(border=True):
-        st.caption("YOUR RECOMMENDATION")
-        st.header(rec["label"])
-        st.write(f"For {result['building_name'] or 'your building'} · {result['waste_profile']['total_kg_week']:,.0f} kg food waste/week")
+    st.markdown('<div class="eyebrow">Recommended pathway</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pathway">{rec["label"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="result-note">{pathway_summary(rec["pathway"])}</div>',
+                unsafe_allow_html=True)
+    st.caption(f"{result['building_name'] or 'Your building'} · "
+               f"{result['waste_profile']['total_kg_week']:,.0f} kg food waste/week")
     mandate_banner(result["mandate"])
 
-    st.subheader("What the plan looks like")
+    st.subheader("Your plan at a glance")
     a, b, c = st.columns(3)
-    a.metric("Processed on-site", f"{plan['onsite_kg_week']:,.0f} kg/week")
-    b.metric("Sent to off-site FOGO", f"{plan['offsite_kg_week']:,.0f} kg/week")
-    c.metric("Landfill methane avoided", f"{plan['ch4_avoided_kg_year']['base']:,.0f}")
-    c.caption("kg CH₄/year · planning range "
-              f"{plan['ch4_avoided_kg_year']['low']:,.0f}–{plan['ch4_avoided_kg_year']['high']:,.0f}")
+    a.metric("Processed on site", f"{plan['onsite_kg_week']:,.0f} kg/week")
+    b.metric("Sent off site", f"{plan['offsite_kg_week']:,.0f} kg/week")
+    c.metric("Methane avoided", f"{plan['ch4_avoided_kg_year']['base']:,.0f}")
+    c.caption("kg CH₄/year")
     a, b = st.columns(2)
-    a.metric("Food-waste bins", f"{plan['bins']} × {plan['bin_size_l']} L")
+    a.metric("FOGO bins", f"{plan['bins']} × {plan['bin_size_l']} L")
     b.metric("Collections", f"{plan['collections_per_week']} per week")
 
     st.subheader("Why this pathway")
@@ -450,33 +460,53 @@ def results_page(result):
             for warning in rec["warnings"]:
                 st.warning(warning)
 
-    st.subheader("Compare your options")
-    comparison_cards(result)
-    with st.expander("View full technical comparison"):
-        full_comparison(result, st.session_state.inputs["local_use"])
-        chosen = result["comparison"][rec["pathway"]]
-        st.caption(f"Of {result['waste_profile']['total_kg_week']:,.0f} kg/week generated, "
-                   f"{chosen['captured_kg_week']:,.0f} kg/week is expected to be separated "
-                   f"and {chosen['uncaptured_kg_week']:,.0f} kg/week remains uncaptured.")
 
-    st.subheader("Implementation plan")
-    st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
-    st.caption(f"Collection days: {' · '.join(plan['collection_days']) or 'none'} · "
-               f"{plan['lifts_per_week']} bin lifts/week · indicative collection cost "
-               f"${plan['collection_cost_aud_week']:,.0f}/week (ex GST).")
+def plan_tab(result):
+    plan = result["plan"]
+    st.header("Put the recommendation into practice")
+    st.subheader("Waste allocation")
+    a, b, c = st.columns(3)
+    a.metric("Generated", f"{result['waste_profile']['total_kg_week']:,.0f} kg/week")
+    b.metric("Processed on site", f"{plan['onsite_kg_week']:,.0f} kg/week")
+    c.metric("Sent off site", f"{plan['offsite_kg_week']:,.0f} kg/week")
+
+    st.subheader("Collection setup")
+    st.write(f"**{plan['bins']} × {plan['bin_size_l']} L FOGO bins**, collected "
+             f"**{plan['collections_per_week']} times per week**.")
+    st.write("Collection days: " + (" · ".join(plan["collection_days"]) or "None"))
+    st.caption(f"{plan['lifts_per_week']} bin lifts/week · indicative cost "
+               f"${plan['collection_cost_aud_week']:,.0f}/week ex GST")
     if plan["local_use_line"]:
-        st.info(plan["local_use_line"])
+        st.success(plan["local_use_line"])
+
+    st.subheader("Next steps")
+    st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
 
     future = next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)
     st.subheader("Build for 2035")
-    st.write(f"At a projected {future['food_waste_kg_week']:,.0f} kg/week in 2035, the recommended pathway is **{future['pathway']}**.")
-    with st.expander("View 2035 projection"):
+    st.info(f"At a projected {future['food_waste_kg_week']:,.0f} kg/week in 2035, "
+            f"the recommended pathway is **{future['pathway']}**.")
+    with st.expander("View detailed 2035 projection"):
         roadmap = pd.DataFrame(result["roadmap"]["rows"])
         st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])
         st.dataframe(roadmap, hide_index=True, width="stretch")
         cumulative = result["roadmap"]["cumulative_net_ghg_t_2026_2035"]
-        st.caption(f"Indicative net GHG saving, 2026–2035: {range_text(cumulative, 1)} t CO₂e. {result['roadmap']['note']}")
+        st.caption(f"Indicative net GHG saving, 2026–2035: {range_text(cumulative, 1)} t CO₂e. "
+                   f"{result['roadmap']['note']}")
 
+
+def evidence_tab(result):
+    rec = result["recommendation"]
+    st.header("Compare and verify")
+    st.write("A concise comparison first; technical calculations and sources remain available below.")
+    simple_comparison(result)
+    with st.expander("View full technical comparison"):
+        full_comparison(result, st.session_state.inputs["local_use"])
+        chosen = result["comparison"][rec["pathway"]]
+        st.caption(f"Of {result['waste_profile']['total_kg_week']:,.0f} kg/week generated, "
+                   f"{chosen['captured_kg_week']:,.0f} kg/week is expected to be separated and "
+                   f"{chosen['uncaptured_kg_week']:,.0f} kg/week remains uncaptured.")
+    mandate_details(result["mandate"])
     profile = result["waste_profile"]
     if profile["tenants"]:
         with st.expander("View waste by tenant"):
@@ -485,27 +515,58 @@ def results_page(result):
                          hide_index=True, width="stretch")
             if any(t["estimated"] for t in profile["tenants"]):
                 st.caption("Estimated tenant volumes use illustrative values from the assumptions sheet.")
-
     st.subheader("Methodology & evidence")
     methodology()
-    if st.button("Edit building inputs"):
+
+
+def results_page(result):
+    if st.session_state.pop("scroll_to_result", False):
+        scroll_to_top()
+    top_left, top_right = st.columns([4, 1])
+    top_left.markdown('<div class="eyebrow">Circular Organics Planner</div>', unsafe_allow_html=True)
+    if top_right.button("← Edit inputs"):
         st.session_state.show_results = False
+        st.session_state.input_step = "waste"
         st.rerun()
+    overview, plan, evidence_view = st.tabs(["Overview", "Plan", "Evidence"])
+    with overview:
+        overview_tab(result)
+    with plan:
+        plan_tab(result)
+    with evidence_view:
+        evidence_tab(result)
 
 
 def about_page():
-    st.title("About the planner")
-    st.write("Built for Climate Hack-tion 2026, Build for 2035. For managers of NSW buildings where food tenants share a waste service.")
-    st.subheader("How it works")
-    st.markdown("1. Profile your waste stream\n2. Compare Off-site FOGO, Hybrid, and On-site\n3. Get a recommended implementation plan")
-    st.subheader("Methodology & evidence")
-    methodology()
-    st.caption("Planning guidance only. Confirm mandate duties with NSW EPA or your council; check approvals and quotes before buying equipment.")
+    st.markdown('<div class="eyebrow">About</div>', unsafe_allow_html=True)
+    st.title("A practical first step for building food waste.")
+    st.markdown(
+        '<div class="lead">The planner helps managers of NSW buildings with shared food services '
+        'choose a workable organics pathway before seeking quotes or approvals.</div>',
+        unsafe_allow_html=True,
+    )
+    st.subheader("Three pathways")
+    st.markdown("""
+**Off-site FOGO**
+
+Separate food waste and have it collected for off-site composting.
+
+**Hybrid**
+
+Process part on site and send the remainder to off-site FOGO.
+
+**On-site**
+
+Process most captured food waste on site, with a service for the remainder.
+""")
+    st.subheader("Clear reasoning")
+    st.write("The recommendation uses visible rules for waste volume, space, local output use, and budget. Every assumption and source remains available in the Evidence tab after running a plan.")
+    st.caption("Built for Climate Hack-tion 2026 · Build for 2035. Planning guidance only; confirm legal duties with NSW EPA or your council.")
 
 
 initialise_state()
 page = st.sidebar.radio("Menu", ["Planner", "About"])
-st.sidebar.caption("Circular Organics Planner · illustrative prototype")
+st.sidebar.caption("NSW food-waste decision tool")
 if page == "About":
     about_page()
 elif st.session_state.show_results and "result" in st.session_state:
