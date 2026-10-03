@@ -1,0 +1,582 @@
+{
+  "case_1_small_cafe_building": {
+    "building_name": "Case 1: Small cafe building (illustrative data)",
+    "waste_profile": {
+      "total_kg_week": 350.0,
+      "source": "estimated",
+      "tenants": [
+        {
+          "name": "Cafes",
+          "type": "cafe",
+          "size": "medium",
+          "count": 3,
+          "kg_week": 300.0,
+          "estimated": true
+        },
+        {
+          "name": "Bakery",
+          "type": "bakery",
+          "size": "small",
+          "count": 1,
+          "kg_week": 50.0,
+          "estimated": true
+        }
+      ]
+    },
+    "mandate": {
+      "capacity_l_week": 1920.0,
+      "branch": "240L",
+      "status_code": "from_2028",
+      "start_year": 2028,
+      "threshold_l_week": 1920.0,
+      "status_text": "Likely covered from 1 July 2028",
+      "notes": [
+        "In a shared waste service, the shared service decides when the mandate applies, and whoever holds the waste contract (often centre management) coordinates tenants and arranges collection.",
+        "Check exemptions: front-of-house dining areas are exempt until 1 July 2030 (kitchens are still covered), and some regional and institutional exemptions apply.",
+        "Guidance only. Confirm with NSW EPA or your council."
+      ]
+    },
+    "recommendation": {
+      "pathway": "offsite",
+      "label": "Off-site FOGO",
+      "space_band": "Limited",
+      "rules_fired": [
+        "R0",
+        "R1"
+      ],
+      "reasons": [
+        "There is not enough space for on-site processing (0 m² available).",
+        "Off-site collection is the simplest option and meets the separation requirement at any size."
+      ],
+      "rejected": {
+        "hybrid": [
+          "Not enough on-site space (0 m²; needs at least 6 m²)"
+        ],
+        "onsite": [
+          "Not enough on-site space (0 m²; needs at least 6 m²)"
+        ]
+      },
+      "warnings": [],
+      "what_would_change": "Hybrid becomes the recommendation when weekly food waste reaches 500 kg (now 350 kg), on-site space is at least 6 m² (now 0 m²), a local use for processed material is secured and the equipment budget covers a small unit (Medium).",
+      "r5_note": null
+    },
+    "comparison": {
+      "offsite": {
+        "label": "Off-site FOGO",
+        "captured_kg_week": 245.0,
+        "offsite_kg_week": 245.0,
+        "onsite_kg_week": 0.0,
+        "uncaptured_kg_week": 105.0,
+        "bins": 2,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 8,
+        "bins_floor_m2": 0.85,
+        "room_ok": true,
+        "collection_cost_aud_week": 270.82,
+        "diverted_kg_week": 245.0,
+        "diverted_kg_year": 12740.0,
+        "net_ghg_t_year": {
+          "low": 3.89,
+          "base": 16.23,
+          "high": 33.12
+        },
+        "ch4_avoided_kg_year": {
+          "low": 218.0,
+          "base": 669.0,
+          "high": 1228.0
+        },
+        "space": "Low",
+        "cost": "Low",
+        "effort": "Low",
+        "equipment_budget": null
+      },
+      "hybrid": {
+        "label": "Hybrid",
+        "captured_kg_week": 245.0,
+        "offsite_kg_week": 122.5,
+        "onsite_kg_week": 122.5,
+        "uncaptured_kg_week": 105.0,
+        "bins": 1,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 4,
+        "bins_floor_m2": 0.43,
+        "room_ok": true,
+        "collection_cost_aud_week": 135.41,
+        "diverted_kg_week": 245.0,
+        "diverted_kg_year": 12740.0,
+        "net_ghg_t_year": {
+          "low": -0.67,
+          "base": 13.11,
+          "high": 32.55
+        },
+        "ch4_avoided_kg_year": {
+          "low": 218.0,
+          "base": 669.0,
+          "high": 1228.0
+        },
+        "space": "Medium",
+        "cost": "Medium",
+        "effort": "Medium",
+        "equipment_budget": {
+          "min": 30000.0,
+          "max": 100000.0,
+          "operating_aud_week": {
+            "min": 52.0,
+            "max": 611.0
+          },
+          "note": "Indicative budget, not a quote."
+        }
+      },
+      "onsite": {
+        "label": "On-site",
+        "captured_kg_week": 245.0,
+        "offsite_kg_week": 24.5,
+        "onsite_kg_week": 220.5,
+        "uncaptured_kg_week": 105.0,
+        "bins": 1,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 4,
+        "bins_floor_m2": 0.43,
+        "room_ok": true,
+        "collection_cost_aud_week": 135.41,
+        "diverted_kg_week": 245.0,
+        "diverted_kg_year": 12740.0,
+        "net_ghg_t_year": {
+          "low": -4.32,
+          "base": 10.62,
+          "high": 32.09
+        },
+        "ch4_avoided_kg_year": {
+          "low": 218.0,
+          "base": 669.0,
+          "high": 1228.0
+        },
+        "space": "High",
+        "cost": "High",
+        "effort": "High",
+        "equipment_budget": {
+          "min": 100000.0,
+          "max": 500000.0,
+          "operating_aud_week": {
+            "min": 52.0,
+            "max": 611.0
+          },
+          "note": "Indicative budget, not a quote."
+        }
+      }
+    },
+    "plan": {
+      "label": "Off-site FOGO",
+      "captured_kg_week": 245.0,
+      "offsite_kg_week": 245.0,
+      "onsite_kg_week": 0.0,
+      "uncaptured_kg_week": 105.0,
+      "bins": 2,
+      "bin_size_l": 240,
+      "bin_mass_kg": 55.512,
+      "collections_per_week": 4,
+      "collection_days": [
+        "Mon",
+        "Wed",
+        "Fri",
+        "Sun"
+      ],
+      "lifts_per_week": 8,
+      "bins_floor_m2": 0.85,
+      "room_ok": true,
+      "collection_cost_aud_week": 270.82,
+      "diverted_kg_week": 245.0,
+      "diverted_kg_year": 12740.0,
+      "net_ghg_t_year": {
+        "low": 3.89,
+        "base": 16.23,
+        "high": 33.12
+      },
+      "ch4_avoided_kg_year": {
+        "low": 218.0,
+        "base": 669.0,
+        "high": 1228.0
+      },
+      "space": "Low",
+      "cost": "Low",
+      "effort": "Low",
+      "equipment_budget": null,
+      "pathway": "offsite",
+      "collections_change": 4,
+      "next_steps": [
+        "Request quotes from at least two FOGO collection providers for 2 × 240 L bins, collected Mon · Wed · Fri · Sun.",
+        "Brief tenants on what goes in the food bin and place bins in each kitchen.",
+        "Weigh food waste for the first month, then revisit this plan."
+      ],
+      "local_use_line": null
+    },
+    "roadmap": {
+      "rows": [
+        {
+          "year": 2026,
+          "food_waste_kg_week": 350.0,
+          "mandate": "From 1 July 2028",
+          "pathway": "Off-site FOGO",
+          "next_step": "Hybrid becomes the recommendation when weekly food waste reaches 500 kg (now 350 kg), on-site space is at least 6 m² (now 0 m²), a local use for processed material is secured and the equipment budget covers a small unit (Medium).",
+          "action": "Confirm the site scope, start separation in covered food-preparation areas, run a weighed audit and confirm a receiving facility."
+        },
+        {
+          "year": 2028,
+          "food_waste_kg_week": 350.0,
+          "mandate": "Covered (since 1 July 2028)",
+          "pathway": "Off-site FOGO",
+          "next_step": "Hybrid becomes the recommendation when weekly food waste reaches 500 kg (now 350 kg), on-site space is at least 6 m² (now 0 m²), a local use for processed material is secured and the equipment budget covers a small unit (Medium).",
+          "action": "Review measured capture, costs and collection reliability before choosing a larger system."
+        },
+        {
+          "year": 2030,
+          "food_waste_kg_week": 350.0,
+          "mandate": "Covered (since 1 July 2028)",
+          "pathway": "Off-site FOGO",
+          "next_step": "Hybrid becomes the recommendation when weekly food waste reaches 500 kg (now 350 kg), on-site space is at least 6 m² (now 0 m²), a local use for processed material is secured and the equipment budget covers a small unit (Medium).",
+          "action": "Recheck the expanded mandate and the end of the dining-area exemption (1 July 2030)."
+        },
+        {
+          "year": 2035,
+          "food_waste_kg_week": 350.0,
+          "mandate": "Covered (since 1 July 2028)",
+          "pathway": "Off-site FOGO",
+          "next_step": "Hybrid becomes the recommendation when weekly food waste reaches 500 kg (now 350 kg), on-site space is at least 6 m² (now 0 m²), a local use for processed material is secured and the equipment budget covers a small unit (Medium).",
+          "action": "Review the on-site pre-processing exemption (expires 1 July 2035) and refresh emission factors."
+        }
+      ],
+      "annual_change_pct": 0.0,
+      "cumulative_net_ghg_t_2026_2035": {
+        "low": 38.9,
+        "base": 162.3,
+        "high": 331.2
+      },
+      "note": "Indicative: full years 2026 to 2035, inputs other than volume kept constant."
+    },
+    "budget_labels": {
+      "low": "Under $30,000 (no equipment)",
+      "medium": "$30,000 to $100,000 (small unit)",
+      "high": "$100,000 or more (larger system)"
+    }
+  },
+  "case_2_shopping_centre_food_court": {
+    "building_name": "Case 2: Shopping centre food court (illustrative data)",
+    "waste_profile": {
+      "total_kg_week": 1000.0,
+      "source": "estimated",
+      "tenants": [
+        {
+          "name": "Restaurants",
+          "type": "restaurant",
+          "size": "medium",
+          "count": 3,
+          "kg_week": 600.0,
+          "estimated": true
+        },
+        {
+          "name": "Quick service",
+          "type": "quick_service",
+          "size": "medium",
+          "count": 2,
+          "kg_week": 300.0,
+          "estimated": true
+        },
+        {
+          "name": "Cafe",
+          "type": "cafe",
+          "size": "medium",
+          "count": 1,
+          "kg_week": 100.0,
+          "estimated": true
+        }
+      ]
+    },
+    "mandate": {
+      "capacity_l_week": 11880.0,
+      "branch": "other",
+      "status_code": "covered_2026",
+      "start_year": 2026,
+      "threshold_l_week": 3960.0,
+      "status_text": "Likely covered now (since 1 July 2026)",
+      "notes": [
+        "In a shared waste service, the shared service decides when the mandate applies, and whoever holds the waste contract (often centre management) coordinates tenants and arranges collection.",
+        "Check exemptions: front-of-house dining areas are exempt until 1 July 2030 (kitchens are still covered), and some regional and institutional exemptions apply.",
+        "Guidance only. Confirm with NSW EPA or your council."
+      ]
+    },
+    "recommendation": {
+      "pathway": "hybrid",
+      "label": "Hybrid",
+      "space_band": "Moderate",
+      "rules_fired": [
+        "R0",
+        "R2"
+      ],
+      "reasons": [
+        "Weekly food waste (1,000 kg) is above the Hybrid threshold (500 kg).",
+        "There is moderate on-site space (10 m²), a local use for processed material and a budget for a small unit.",
+        "Processing part of it on site cuts off-site bin lifts from 16 to 8 per week."
+      ],
+      "rejected": {},
+      "warnings": [
+        "Check approvals and that processed output is resource-recovered, not landfilled (dehydrated food waste is not compost)."
+      ],
+      "what_would_change": "On-site becomes a candidate when weekly food waste reaches 1,500 kg (now 1,000 kg), on-site space is at least 15 m² (now 10 m²) and the equipment budget covers a larger system (High).",
+      "r5_note": null
+    },
+    "comparison": {
+      "offsite": {
+        "label": "Off-site FOGO",
+        "captured_kg_week": 700.0,
+        "offsite_kg_week": 700.0,
+        "onsite_kg_week": 0.0,
+        "uncaptured_kg_week": 300.0,
+        "bins": 4,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 16,
+        "bins_floor_m2": 1.71,
+        "room_ok": true,
+        "collection_cost_aud_week": 541.63,
+        "diverted_kg_week": 700.0,
+        "diverted_kg_year": 36400.0,
+        "net_ghg_t_year": {
+          "low": 11.12,
+          "base": 46.37,
+          "high": 94.64
+        },
+        "ch4_avoided_kg_year": {
+          "low": 624.0,
+          "base": 1911.0,
+          "high": 3510.0
+        },
+        "space": "Low",
+        "cost": "Low",
+        "effort": "Low",
+        "equipment_budget": null
+      },
+      "hybrid": {
+        "label": "Hybrid",
+        "captured_kg_week": 700.0,
+        "offsite_kg_week": 350.0,
+        "onsite_kg_week": 350.0,
+        "uncaptured_kg_week": 300.0,
+        "bins": 2,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 8,
+        "bins_floor_m2": 0.85,
+        "room_ok": true,
+        "collection_cost_aud_week": 270.82,
+        "diverted_kg_week": 700.0,
+        "diverted_kg_year": 36400.0,
+        "net_ghg_t_year": {
+          "low": -1.92,
+          "base": 37.46,
+          "high": 93.0
+        },
+        "ch4_avoided_kg_year": {
+          "low": 624.0,
+          "base": 1911.0,
+          "high": 3510.0
+        },
+        "space": "Medium",
+        "cost": "Medium",
+        "effort": "Medium",
+        "equipment_budget": {
+          "min": 30000.0,
+          "max": 100000.0,
+          "operating_aud_week": {
+            "min": 52.0,
+            "max": 611.0
+          },
+          "note": "Indicative budget, not a quote."
+        }
+      },
+      "onsite": {
+        "label": "On-site",
+        "captured_kg_week": 700.0,
+        "offsite_kg_week": 70.0,
+        "onsite_kg_week": 630.0,
+        "uncaptured_kg_week": 300.0,
+        "bins": 1,
+        "bin_size_l": 240,
+        "bin_mass_kg": 55.512,
+        "collections_per_week": 4,
+        "collection_days": [
+          "Mon",
+          "Wed",
+          "Fri",
+          "Sun"
+        ],
+        "lifts_per_week": 4,
+        "bins_floor_m2": 0.43,
+        "room_ok": true,
+        "collection_cost_aud_week": 135.41,
+        "diverted_kg_week": 700.0,
+        "diverted_kg_year": 36400.0,
+        "net_ghg_t_year": {
+          "low": -12.35,
+          "base": 30.33,
+          "high": 91.69
+        },
+        "ch4_avoided_kg_year": {
+          "low": 624.0,
+          "base": 1911.0,
+          "high": 3510.0
+        },
+        "space": "High",
+        "cost": "High",
+        "effort": "High",
+        "equipment_budget": {
+          "min": 100000.0,
+          "max": 500000.0,
+          "operating_aud_week": {
+            "min": 52.0,
+            "max": 611.0
+          },
+          "note": "Indicative budget, not a quote."
+        }
+      }
+    },
+    "plan": {
+      "label": "Hybrid",
+      "captured_kg_week": 700.0,
+      "offsite_kg_week": 350.0,
+      "onsite_kg_week": 350.0,
+      "uncaptured_kg_week": 300.0,
+      "bins": 2,
+      "bin_size_l": 240,
+      "bin_mass_kg": 55.512,
+      "collections_per_week": 4,
+      "collection_days": [
+        "Mon",
+        "Wed",
+        "Fri",
+        "Sun"
+      ],
+      "lifts_per_week": 8,
+      "bins_floor_m2": 0.85,
+      "room_ok": true,
+      "collection_cost_aud_week": 270.82,
+      "diverted_kg_week": 700.0,
+      "diverted_kg_year": 36400.0,
+      "net_ghg_t_year": {
+        "low": -1.92,
+        "base": 37.46,
+        "high": 93.0
+      },
+      "ch4_avoided_kg_year": {
+        "low": 624.0,
+        "base": 1911.0,
+        "high": 3510.0
+      },
+      "space": "Medium",
+      "cost": "Medium",
+      "effort": "Medium",
+      "equipment_budget": {
+        "min": 30000.0,
+        "max": 100000.0,
+        "operating_aud_week": {
+          "min": 52.0,
+          "max": 611.0
+        },
+        "note": "Indicative budget, not a quote."
+      },
+      "pathway": "hybrid",
+      "collections_change": 1,
+      "next_steps": [
+        "Get quotes for a small on-site unit sized to about 50 kg/day and check approvals.",
+        "Request FOGO collection for the remaining 350 kg/week (2 × 240 L, Mon · Wed · Fri · Sun).",
+        "Agree where the processed output will be used, then weigh volumes for a month."
+      ],
+      "local_use_line": "Processed material can be used on site, for example in a rooftop garden."
+    },
+    "roadmap": {
+      "rows": [
+        {
+          "year": 2026,
+          "food_waste_kg_week": 1000.0,
+          "mandate": "Covered (since 1 July 2026)",
+          "pathway": "Hybrid",
+          "next_step": "On-site becomes a candidate when weekly food waste reaches 1,500 kg (now 1,000 kg), on-site space is at least 15 m² (now 10 m²) and the equipment budget covers a larger system (High).",
+          "action": "Confirm the site scope, start separation in covered food-preparation areas, run a weighed audit and confirm a receiving facility."
+        },
+        {
+          "year": 2028,
+          "food_waste_kg_week": 1102.0,
+          "mandate": "Covered (since 1 July 2026)",
+          "pathway": "Hybrid",
+          "next_step": "On-site becomes a candidate when weekly food waste reaches 1,500 kg (now 1,102 kg), on-site space is at least 15 m² (now 10 m²) and the equipment budget covers a larger system (High).",
+          "action": "Review measured capture, costs and collection reliability before choosing a larger system."
+        },
+        {
+          "year": 2030,
+          "food_waste_kg_week": 1216.0,
+          "mandate": "Covered (since 1 July 2026)",
+          "pathway": "Hybrid",
+          "next_step": "On-site becomes a candidate when weekly food waste reaches 1,500 kg (now 1,216 kg), on-site space is at least 15 m² (now 10 m²) and the equipment budget covers a larger system (High).",
+          "action": "Recheck the expanded mandate and the end of the dining-area exemption (1 July 2030)."
+        },
+        {
+          "year": 2035,
+          "food_waste_kg_week": 1551.0,
+          "mandate": "Covered (since 1 July 2026)",
+          "pathway": "Hybrid",
+          "next_step": "On-site becomes a candidate when on-site space is at least 15 m² (now 10 m²) and the equipment budget covers a larger system (High).",
+          "action": "Review the on-site pre-processing exemption (expires 1 July 2035) and refresh emission factors."
+        }
+      ],
+      "annual_change_pct": 5.0,
+      "cumulative_net_ghg_t_2026_2035": {
+        "low": -24.2,
+        "base": 471.1,
+        "high": 1169.8
+      },
+      "note": "Indicative: full years 2026 to 2035, inputs other than volume kept constant."
+    },
+    "budget_labels": {
+      "low": "Under $30,000 (no equipment)",
+      "medium": "$30,000 to $100,000 (small unit)",
+      "high": "$100,000 or more (larger system)"
+    }
+  }
+}
