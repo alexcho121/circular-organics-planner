@@ -323,12 +323,11 @@ def mandate_status(mandate):
 
 
 def mandate_details(mandate):
-    with st.expander("NSW mandate details and exemptions"):
-        if mandate["capacity_l_week"] is not None:
-            st.write(f"General-waste capacity: **{mandate['capacity_l_week']:,.0f} L/week**")
-            if mandate["status_code"] != "below":
-                st.write(f"Relevant threshold: **{mandate['threshold_l_week']:,.0f} L/week**")
-        st.markdown("\n".join(f"- {note}" for note in mandate["notes"]))
+    if mandate["capacity_l_week"] is not None:
+        st.write(f"General-waste capacity: **{mandate['capacity_l_week']:,.0f} L/week**")
+        if mandate["status_code"] != "below":
+            st.write(f"Relevant threshold: **{mandate['threshold_l_week']:,.0f} L/week**")
+    st.markdown("\n".join(f"- {note}" for note in mandate["notes"]))
 
 
 def simple_comparison(result):
@@ -591,13 +590,13 @@ def plan_tab(result):
     st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
 
     st.markdown(f"**2035 outlook** — {outlook_copy(result)}")
-    with st.expander("Explore 2035 projection →"):
-        roadmap = pd.DataFrame(result["roadmap"]["rows"])
-        st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])
-        st.dataframe(roadmap, hide_index=True, width="stretch")
-        cumulative = result["roadmap"]["cumulative_net_ghg_t_2026_2035"]
-        st.caption(f"Indicative net GHG saving, 2026–2035: {range_text(cumulative, 1)} t CO₂e. "
-                   f"{result['roadmap']['note']}")
+    st.markdown("**2035 projection**")
+    roadmap = pd.DataFrame(result["roadmap"]["rows"])
+    st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])
+    st.dataframe(roadmap, hide_index=True, width="stretch")
+    cumulative = result["roadmap"]["cumulative_net_ghg_t_2026_2035"]
+    st.caption(f"Indicative net GHG saving, 2026–2035: {range_text(cumulative, 1)} t CO₂e. "
+               f"{result['roadmap']['note']}")
 
 
 def why_recommendation(result):
@@ -608,8 +607,8 @@ def why_recommendation(result):
     st.write(rec["what_would_change"])
     for pathway, reasons in rec["rejected"].items():
         st.caption(f"{LABELS[pathway]}: {'; '.join(reasons)}")
-    with st.expander("View full technical comparison"):
-        full_comparison(result, st.session_state.inputs["local_use"])
+    st.markdown("**Full technical comparison**")
+    full_comparison(result, st.session_state.inputs["local_use"])
 
 
 def evidence_tab(result):
@@ -646,9 +645,9 @@ def results_page(result):
         mandate_details(result["mandate"])
         profile = result["waste_profile"]
         if profile["tenants"]:
-            with st.expander("View waste by tenant"):
-                table = pd.DataFrame(profile["tenants"])
-                st.dataframe(table[["name", "size", "count", "kg_week", "estimated"]], hide_index=True, width="stretch")
+            st.markdown("**Waste by tenant**")
+            table = pd.DataFrame(profile["tenants"])
+            st.dataframe(table[["name", "size", "count", "kg_week", "estimated"]], hide_index=True, width="stretch")
 
 
 def about_page():
