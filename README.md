@@ -571,7 +571,7 @@ The recommendation itself is produced by the transparent R0–R5 Python decision
 | **Yuna Kim** | Lead, recommendation rules, testing and submission |
 | **Jongyoon Yoo** | App design, Demo video and presentation support |
 | **Youngjun Cho** | Full application development, decision engine, frontend/UI, design implementation, README and deployment |
-| **Yeonsu Kim** | Research and data |
+| **Yeonsu Kim** | Research and evidence lead — NSW policy research, assumptions dataset, source verification, emissions/cost factors and modelling inputs |
 
 ---
 
