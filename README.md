@@ -813,10 +813,10 @@ It comes from the transparent **R0–R5 Python decision engine**.
 
 | Member | Contribution |
 |---|---|
-| **Yuna Kim** | **Project coordination and decision framework** — assigned team roles and tasks, maintained project checklists and working documents, managed recommendation-rule/spec decisions, coordinated progress and submission, performed QA and bug review, and co-produced the demo video. |
-| **Jongyoon Yoo** | **Product concept and presentation** — created the initial Figma app concept/design, prepared the demo script, co-produced the demo video, and performed UI/functional QA and bug review with Yuna. |
-| **Youngjun Cho** | **Application engineering and final product implementation** — built and integrated the application, implemented the decision engine, frontend/UI and final visual design, connected the research/configuration layer to the product, implemented result and trade-off/2035 features, handled deployment, and produced the final GitHub README. |
-| **Yeonsu Kim** | **Research and evidence** — researched NSW policy and regulatory context, built the assumptions/evidence dataset, verified sources, documented H/M/L confidence classifications, and supplied emissions, methane, cost, equipment, collection and planning inputs used by the model. |
+| **Yuna Kim** | **Project coordination, decision rules, QA, submission** |
+| **Jongyoon Yoo** | **Figma design, demo script, video, QA** |
+| **Youngjun Cho** | **Full-stack app development, decision engine, UI implementation, deployment** |
+| **Yeonsu Kim** | **Research, evidence, assumptions and modelling data** |
 
 ---
 
