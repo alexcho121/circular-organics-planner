@@ -4,7 +4,7 @@ Each case states the input in plain words and the expected result. The same case
 in test_cases.md for the team. Boundaries are inclusive: W = T1 counts as reaching T1.
 """
 import pytest
-from app.engine import load_config, plan_building, mandate_check, impact
+from app.engine import evidence_summary, impact, load_config, mandate_check, plan_building
 
 CFG = load_config()
 
@@ -103,3 +103,63 @@ def test_research_cross_check():
     """Yeonsu's worked example at W = 600: Hybrid 0.432222, Off-site 0.534996 t CO2e/week."""
     assert impact(600, "hybrid", CFG)["net_ghg_t_year"]["base"] == pytest.approx(0.432222 * 52, abs=0.01)
     assert impact(600, "offsite", CFG)["net_ghg_t_year"]["base"] == pytest.approx(0.534996 * 52, abs=0.01)
+
+
+def test_case_2_tradeoff_is_signed_against_offsite_fogo():
+    result = plan_building(
+        building(total_food_waste_kg_week=1000, onsite_space_m2=10, local_use=True,
+                 budget_level="medium", waste_room_area_m2=20, annual_change_pct=5,
+                 general_waste_bins=[{"size_l": 660, "count": 6, "collections_per_week": 3}]),
+        CFG,
+    )
+    tradeoff = result["tradeoff"]
+    assert result["recommendation"]["pathway"] == "hybrid"
+    assert tradeoff["alternative_pathway"] == "offsite"
+    assert tradeoff["recommended_minus_alternative"] == {
+        "bin_lifts_per_week": -8,
+        "collections_per_week": 0,
+        "collection_cost_aud_week": -270.81,
+        "net_ghg_t_year_base": -8.91,
+    }
+
+
+def test_next_decision_point_keeps_existing_constraints_explicit():
+    result = plan_building(
+        building(total_food_waste_kg_week=1000, onsite_space_m2=10, local_use=True,
+                 budget_level="medium", waste_room_area_m2=20, annual_change_pct=5),
+        CFG,
+    )
+    point = result["next_decision_point"]
+    assert result["recommendation"]["pathway"] == "hybrid"
+    assert point["target_pathway"] == "onsite"
+    assert point["minimum_food_waste_kg_week"] == 1500
+    assert point["projected_2035_reaches_threshold"] is True
+    assert "on-site space is at least 15 m² (now 10 m²)" in point["remaining_conditions"]
+    assert "the equipment budget covers a larger system (High)" in point["remaining_conditions"]
+    assert next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)["pathway"] == "Hybrid"
+
+
+def test_no_next_decision_point_for_existing_onsite_pathway():
+    result = plan_building(
+        building(total_food_waste_kg_week=2000, onsite_space_m2=20, local_use=True,
+                 budget_level="high", waste_room_area_m2=20),
+        CFG,
+    )
+    assert result["recommendation"]["pathway"] == "onsite"
+    assert result["next_decision_point"] == {
+        "has_next_decision_point": False,
+        "reason": "The current pathway is the highest pathway in the existing rules.",
+    }
+
+
+def test_evidence_summary_uses_loaded_assumptions():
+    summary = evidence_summary(CFG)
+    expected_sources = {
+        source.strip()
+        for item in CFG.values()
+        for source in str(item["source_id"] or "").split(";")
+        if source.strip()
+    }
+    assert summary["assumption_count"] == len(CFG)
+    assert summary["referenced_source_count"] == len(expected_sources)
+    assert sum(summary["confidence_counts"].values()) == len(CFG)

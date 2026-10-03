@@ -277,6 +277,39 @@
       },
       "note": "Indicative: full years 2026 to 2035, inputs other than volume kept constant."
     },
+    "tradeoff": {
+      "recommended_pathway": "offsite",
+      "alternative_pathway": "hybrid",
+      "alternative_label": "Hybrid",
+      "recommended_minus_alternative": {
+        "bin_lifts_per_week": 4,
+        "collections_per_week": 0,
+        "collection_cost_aud_week": 135.41,
+        "net_ghg_t_year_base": 3.12
+      }
+    },
+    "next_decision_point": {
+      "has_next_decision_point": true,
+      "target_pathway": "hybrid",
+      "target_label": "Hybrid",
+      "minimum_food_waste_kg_week": 500.0,
+      "projected_2035_kg_week": 350.0,
+      "projected_2035_reaches_threshold": false,
+      "remaining_conditions": [
+        "on-site space is at least 6 m² (now 0 m²)",
+        "a local use for processed material is secured",
+        "the equipment budget covers a small unit (Medium)"
+      ]
+    },
+    "evidence_summary": {
+      "assumption_count": 39,
+      "referenced_source_count": 11,
+      "confidence_counts": {
+        "H": 9,
+        "M": 10,
+        "L": 20
+      }
+    },
     "budget_labels": {
       "low": "Under $30,000 (no equipment)",
       "medium": "$30,000 to $100,000 (small unit)",
@@ -572,6 +605,38 @@
         "high": 1169.8
       },
       "note": "Indicative: full years 2026 to 2035, inputs other than volume kept constant."
+    },
+    "tradeoff": {
+      "recommended_pathway": "hybrid",
+      "alternative_pathway": "offsite",
+      "alternative_label": "Off-site FOGO",
+      "recommended_minus_alternative": {
+        "bin_lifts_per_week": -8,
+        "collections_per_week": 0,
+        "collection_cost_aud_week": -270.81,
+        "net_ghg_t_year_base": -8.91
+      }
+    },
+    "next_decision_point": {
+      "has_next_decision_point": true,
+      "target_pathway": "onsite",
+      "target_label": "On-site",
+      "minimum_food_waste_kg_week": 1500.0,
+      "projected_2035_kg_week": 1551.0,
+      "projected_2035_reaches_threshold": true,
+      "remaining_conditions": [
+        "on-site space is at least 15 m² (now 10 m²)",
+        "the equipment budget covers a larger system (High)"
+      ]
+    },
+    "evidence_summary": {
+      "assumption_count": 39,
+      "referenced_source_count": 11,
+      "confidence_counts": {
+        "H": 9,
+        "M": 10,
+        "L": 20
+      }
     },
     "budget_labels": {
       "low": "Under $30,000 (no equipment)",

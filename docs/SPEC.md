@@ -64,6 +64,9 @@ Other options, kept for reference:
 - `comparison.offsite | hybrid | onsite`: `offsite_kg_week`, `onsite_kg_week`, `bins`, `bin_size_l`, `collections_per_week`, `collection_days`, `lifts_per_week`, `room_ok`, `collection_cost_aud_week`, `diverted_kg_week`, `diverted_kg_year`, `ch4_avoided_kg_year{low,base,high}`, `net_ghg_t_year{low,base,high}`, `space`/`cost`/`effort` (Low, Medium, High), `equipment_budget`
 - `plan`: the chosen pathway's comparison fields + `collections_change`, `next_steps[3]`, `local_use_line`
 - `roadmap`: `rows[]` for 2026, 2028, 2030 and 2035 (`year`, `food_waste_kg_week`, `mandate`, `pathway`, `next_step`, `action`), `cumulative_net_ghg_t_2026_2035{low,base,high}`, `note`
+- `tradeoff`: an explanatory comparison between the recommended pathway and its adjacent operational alternative. `recommended_minus_alternative` provides signed deltas for bin lifts, collections, collection cost and base net GHG saving; it does not affect recommendation selection.
+- `next_decision_point`: the next higher pathway candidate under existing R0–R5 constraints, including its volume threshold, the 2035 projection check and any remaining conditions. It is not a new recommendation rule.
+- `evidence_summary`: dynamic counts derived from the loaded assumptions (`assumption_count`, unique `referenced_source_count`, and H/M/L `confidence_counts`).
 - `budget_labels{low,medium,high}`
 
 Figma mapping: the Compare page rows read from `comparison`. "Methane avoided (range)" becomes two rows: `ch4_avoided_kg_year` and `net_ghg_t_year`. The Plan page reads `plan` and `roadmap`. The mandate banner reads `mandate`.
@@ -88,6 +91,8 @@ Pick the highest candidate (On-site > Hybrid > Off-site), then apply R4. `what_w
 **Impact (per year):** net GHG = (captured × 1.296 − off-site × 0.0222 − on-site × 0.5116) ÷ 1000 × 52 (t CO2e). Landfill methane avoided = captured t × 52.5 × 52 (kg CH4). Low uses min capture, min landfill and max processing factors; high uses the reverse.
 
 **Roadmap:** each year W_y = W × (1 + g)^(y − 2026); bin capacity scales the same way; other inputs stay constant. Re-run C0 and R0 to R5. The fixed action text per year comes from the research doc.
+
+**Derived analysis layers:** trade-off, next-decision-point and evidence-summary fields are explanatory output only. They reuse calculated scenario values and assumptions; R0–R5, thresholds and pathway selection remain unchanged.
 
 ## 6. Demo buildings (illustrative data)
 

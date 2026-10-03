@@ -386,22 +386,19 @@ def range_text(value, digits=0):
 
 
 def evidence():
-    st.caption("All calculations use documented assumptions with source links and confidence ranges.")
-    with st.expander("All numbers and sources"):
-        data = pd.read_csv(DATA / "assumptions.csv")
-        data.insert(0, "Source link", data["source_url"].fillna("").str.split(";").str[0])
-        st.dataframe(
-            data[["item", "unit", "min", "base", "max", "confidence",
-                  "source_id", "Source link", "source_url", "notes", "key"]],
-            hide_index=True, width="stretch",
-            column_config={"Source link": st.column_config.LinkColumn("Source link")},
-        )
-        st.caption("Confidence: H = direct evidence; M = modelled or vendor data; L = team assumption. Multiple URLs are retained in the source_url column.")
+    data = pd.read_csv(DATA / "assumptions.csv")
+    data.insert(0, "Source link", data["source_url"].fillna("").str.split(";").str[0])
+    st.dataframe(
+        data[["item", "unit", "min", "base", "max", "confidence",
+              "source_id", "Source link", "source_url", "notes", "key"]],
+        hide_index=True, width="stretch",
+        column_config={"Source link": st.column_config.LinkColumn("Source link")},
+    )
+    st.caption("Confidence: H = direct evidence; M = modelled or vendor data; L = team assumption. Multiple URLs are retained in the source_url column.")
 
 
 def methodology():
-    st.write("The planner checks NSW mandate timing from general-waste bin capacity, compares three pathways, sizes a collection plan, and projects the same conditions to 2035.")
-    with st.expander("Detailed recommendation rules"):
+    with st.expander("View decision rules"):
         st.markdown(f"""
 | Rule | Condition | Result |
 |---|---|---|
@@ -413,7 +410,6 @@ def methodology():
 | R5 | Off-site needs {v(CFG, 'r5_high_collections_per_week'):g}+ collections/week and Hybrid needs fewer | Advisory note |
 """)
         st.caption("The volume and space thresholds are planning rules, not laws or break-even points. The mandate check is indicative and does not model exemptions.")
-    evidence()
 
 
 def scroll_to_top():
@@ -458,6 +454,83 @@ def next_step_copy(plan):
             f"the remaining {plan['offsite_kg_week']:,.0f} kg/week through FOGO.")
 
 
+def tradeoff_section(result):
+    tradeoff = result["tradeoff"]
+    delta = tradeoff["recommended_minus_alternative"]
+    alternative = tradeoff["alternative_label"]
+    st.markdown('<div class="section-label">Trade-off</div>', unsafe_allow_html=True)
+    st.write(f"Compared with **{alternative}**")
+    points = []
+    if delta["bin_lifts_per_week"]:
+        direction = "fewer" if delta["bin_lifts_per_week"] < 0 else "more"
+        points.append(f"**{abs(delta['bin_lifts_per_week']):,.0f} {direction} bin lifts/week**")
+    if delta["collection_cost_aud_week"]:
+        direction = "lower" if delta["collection_cost_aud_week"] < 0 else "higher"
+        points.append(f"**${abs(delta['collection_cost_aud_week']):,.0f}/week {direction} collection cost**")
+    if points:
+        st.markdown(" · ".join(points))
+    ghg_delta = delta["net_ghg_t_year_base"]
+    if ghg_delta < 0:
+        st.caption(f"Climate trade-off: {alternative} has higher modelled net GHG saving by {abs(ghg_delta):,.1f} t CO₂e/year.")
+    elif ghg_delta > 0:
+        st.caption(f"Climate trade-off: the recommended pathway has higher modelled net GHG saving by {ghg_delta:,.1f} t CO₂e/year.")
+    else:
+        st.caption("Climate trade-off: both pathways have the same modelled net GHG saving.")
+
+
+def pathways_compared_section(result):
+    rec = result["recommendation"]
+    alternative = result["tradeoff"]["alternative_pathway"]
+    decision = result["next_decision_point"]
+    st.markdown('<div class="section-label">Pathways compared</div>', unsafe_allow_html=True)
+    for pathway in PATHWAYS:
+        if pathway == rec["pathway"]:
+            status = "Recommended"
+        elif pathway == alternative:
+            status = "Alternative"
+        else:
+            status = "Conditions not met"
+        st.markdown(f'<div class="path-status"><strong>{escape(LABELS[pathway])}</strong><span>{status}</span></div>', unsafe_allow_html=True)
+        if decision.get("target_pathway") == pathway and decision["remaining_conditions"]:
+            st.caption(decision["remaining_conditions"][0] + ".")
+
+
+def build_2035_section(result):
+    rec = result["recommendation"]
+    decision = result["next_decision_point"]
+    st.markdown('<div class="section-label">Build for 2035</div>', unsafe_allow_html=True)
+    st.write(f"**{rec['label']} today**")
+    if not decision["has_next_decision_point"]:
+        st.caption(decision["reason"])
+        return
+    st.write(f"Next decision point: **{decision['minimum_food_waste_kg_week']:,.0f} kg/week**")
+    if decision["projected_2035_reaches_threshold"]:
+        st.caption(f"The projected 2035 volume reaches this threshold ({decision['projected_2035_kg_week']:,.0f} kg/week).")
+    else:
+        st.caption(f"The projected 2035 volume is {decision['projected_2035_kg_week']:,.0f} kg/week, below this threshold.")
+    if decision["remaining_conditions"]:
+        st.write(f"**{decision['target_label']} becomes a candidate only if:**")
+        st.markdown("\n".join(f"- {condition}" for condition in decision["remaining_conditions"]))
+    else:
+        st.caption(f"The existing conditions for {decision['target_label']} are already met.")
+
+
+def data_sources_section(result):
+    summary = result["evidence_summary"]
+    confidence = summary["confidence_counts"]
+    st.markdown('<div class="section-label">Data & sources</div>', unsafe_allow_html=True)
+    st.markdown(f"**{summary['assumption_count']:,} assumptions** · **{summary['referenced_source_count']:,} referenced sources**")
+    st.caption(f"Confidence: H {confidence['H']} · M {confidence['M']} · L {confidence['L']} · Documented min / base / max ranges and source-linked calculations.")
+    with st.expander("View all numbers & sources"):
+        evidence()
+
+
+def transparent_method_section():
+    st.markdown('<div class="section-label">Transparent method</div>', unsafe_allow_html=True)
+    st.write("Transparent rule-based recommendation. No black-box scoring.")
+    methodology()
+
+
 def overview_tab(result):
     rec, plan = result["recommendation"], result["plan"]
     hero, status = st.columns([3, 1], gap="large")
@@ -488,8 +561,11 @@ def overview_tab(result):
     st.markdown("".join(f'<div class="reason"><span class="check">✓</span><span>{escape(reason)}</span></div>' for reason in rec["reasons"][:3]), unsafe_allow_html=True)
     st.markdown('<div class="section-label">Next step</div>', unsafe_allow_html=True)
     st.write(next_step_copy(plan))
-    st.markdown(f'<div class="section-label">Looking ahead · 2035</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Looking ahead · 2035</div>', unsafe_allow_html=True)
     st.write(outlook_copy(result))
+    tradeoff_section(result)
+    pathways_compared_section(result)
+    build_2035_section(result)
     if rec["r5_note"]:
         st.info(rec["r5_note"])
     if rec["warnings"]:
@@ -564,15 +640,15 @@ def results_page(result):
         plan_tab(result)
     with st.expander("Why this recommendation?"):
         why_recommendation(result)
-    with st.expander("Methodology & sources"):
-        st.caption("All calculations use documented assumptions, source links and confidence levels.")
+    data_sources_section(result)
+    transparent_method_section()
+    with st.expander("NSW mandate details and tenant evidence"):
         mandate_details(result["mandate"])
         profile = result["waste_profile"]
         if profile["tenants"]:
             with st.expander("View waste by tenant"):
                 table = pd.DataFrame(profile["tenants"])
                 st.dataframe(table[["name", "size", "count", "kg_week", "estimated"]], hide_index=True, width="stretch")
-        methodology()
 
 
 def about_page():
@@ -598,7 +674,7 @@ Process part on site and send the remainder to off-site FOGO.
 Process most captured food waste on site, with a service for the remainder.
 """)
     st.subheader("Clear reasoning")
-    st.write("The recommendation uses visible rules for waste volume, space, local output use, and budget. Every assumption and source remains available in the Evidence tab after running a plan.")
+    st.write("The recommendation uses visible rules for waste volume, space, local output use, and budget. Every assumption and source remains available in the Data & Sources section after running a plan.")
     st.caption("Built for Climate Hack-tion 2026 · Build for 2035. Planning guidance only; confirm legal duties with NSW EPA or your council.")
 
 

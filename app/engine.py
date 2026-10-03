@@ -73,6 +73,26 @@ def v(cfg, key, which="base"):
     return cfg[key][which]
 
 
+def evidence_summary(cfg):
+    """Summarise the documented assumptions and source references in the loaded config."""
+    source_ids = {
+        source.strip()
+        for item in cfg.values()
+        for source in str(item["source_id"] or "").split(";")
+        if source.strip()
+    }
+    confidence = {level: 0 for level in ("H", "M", "L")}
+    for item in cfg.values():
+        level = item["confidence"]
+        if level in confidence:
+            confidence[level] += 1
+    return {
+        "assumption_count": len(cfg),
+        "referenced_source_count": len(source_ids),
+        "confidence_counts": confidence,
+    }
+
+
 # ---------------------------------------------------------------- O1 waste profile
 def waste_profile(inp, cfg):
     """W = entered total, or the sum of tenant estimates (measured kg overrides the type default)."""
@@ -344,6 +364,51 @@ def equipment_budget(pathway, cfg):
             "note": "Indicative budget, not a quote."}
 
 
+def tradeoff_analysis(recommended, comparison):
+    """Compare the selected pathway with its adjacent operational alternative.
+
+    The signed deltas are recommended minus alternative. This is explanatory output
+    only and never participates in the R0–R5 pathway selection.
+    """
+    alternative = {"offsite": "hybrid", "hybrid": "offsite", "onsite": "hybrid"}[recommended]
+    plan, other = comparison[recommended], comparison[alternative]
+    return {
+        "recommended_pathway": recommended,
+        "alternative_pathway": alternative,
+        "alternative_label": LABELS[alternative],
+        "recommended_minus_alternative": {
+            "bin_lifts_per_week": plan["lifts_per_week"] - other["lifts_per_week"],
+            "collections_per_week": plan["collections_per_week"] - other["collections_per_week"],
+            "collection_cost_aud_week": round(
+                plan["collection_cost_aud_week"] - other["collection_cost_aud_week"], 2),
+            "net_ghg_t_year_base": round(
+                plan["net_ghg_t_year"]["base"] - other["net_ghg_t_year"]["base"], 2),
+        },
+    }
+
+
+def next_decision_point(W, space_m2, local_use, budget, cfg, current_pathway, projected_2035_kg_week):
+    """Describe the next higher existing-rule candidate without changing the recommendation."""
+    target = {"offsite": "hybrid", "hybrid": "onsite", "onsite": None}[current_pathway]
+    if target is None:
+        return {
+            "has_next_decision_point": False,
+            "reason": "The current pathway is the highest pathway in the existing rules.",
+        }
+    threshold_key = "t1_hybrid_kg_week" if target == "hybrid" else "t2_onsite_kg_week"
+    threshold = v(cfg, threshold_key)
+    remaining = _unmet(max(W, threshold), space_m2, local_use, budget, cfg, target)
+    return {
+        "has_next_decision_point": True,
+        "target_pathway": target,
+        "target_label": LABELS[target],
+        "minimum_food_waste_kg_week": threshold,
+        "projected_2035_kg_week": projected_2035_kg_week,
+        "projected_2035_reaches_threshold": projected_2035_kg_week >= threshold,
+        "remaining_conditions": remaining,
+    }
+
+
 # ---------------------------------------------------------------- O6 roadmap
 def roadmap(inp, W, cfg):
     g = float(inp.get("annual_change_pct") or 0) / 100
@@ -381,6 +446,8 @@ def plan_building(inp, cfg):
                       "equipment_budget": equipment_budget(p, cfg)} for p in PATHWAYS}
     chosen = rec["pathway"]
     current = int(inp.get("current_collections_per_week") or 0)
+    roadmap_result = roadmap(inp, W, cfg)
+    future_2035 = next(row for row in roadmap_result["rows"] if row["year"] == 2035)
     return {
         "building_name": inp.get("building_name", ""),
         "waste_profile": profile,
@@ -392,7 +459,11 @@ def plan_building(inp, cfg):
                  "next_steps": next_steps(chosen, plans[chosen]),
                  "local_use_line": ("Processed material has a local use on site or nearby."
                                     if local_use and chosen != "offsite" else None)},
-        "roadmap": roadmap(inp, W, cfg),
+        "roadmap": roadmap_result,
+        "tradeoff": tradeoff_analysis(chosen, comparison),
+        "next_decision_point": next_decision_point(
+            W, space, local_use, budget, cfg, chosen, future_2035["food_waste_kg_week"]),
+        "evidence_summary": evidence_summary(cfg),
         "budget_labels": budget_bands(cfg),
     }
 
