@@ -20,6 +20,27 @@ from app.engine import (  # noqa: E402
 )
 
 st.set_page_config(page_title="Circular Organics Planner", layout="wide")
+st.markdown("""
+<style>
+    .stMainBlockContainer {max-width: 1040px; padding-top: 2.5rem; padding-bottom: 4rem;}
+    h1, h2, h3 {letter-spacing: -0.025em; color: #1f3829;}
+    h1 {font-size: clamp(2.35rem, 5vw, 4rem); line-height: 1.02;}
+    h2 {margin-top: 1.5rem;}
+    [data-testid="stSidebar"] {background: #e9ede5; border-right: 1px solid #d7ddd4;}
+    [data-testid="stMetric"] {background: #ffffff; border: 1px solid #dce2da; border-radius: 14px; padding: 1rem 1.1rem;}
+    [data-testid="stMetricLabel"] {color: #587063;}
+    [data-testid="stMetricValue"] {color: #1f3829;}
+    .stButton > button[kind="primary"] {border-radius: 999px; padding: .65rem 1.5rem; font-weight: 650;}
+    .stButton > button[kind="secondary"] {border-radius: 999px;}
+    [data-testid="stAlert"] {border-radius: 12px;}
+    hr {border-color: #dce2da; margin: 2rem 0;}
+    .eyebrow {color:#557a62; font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;}
+    .lead {font-size:1.2rem; line-height:1.55; max-width:700px; color:#4f6156;}
+    .step {color:#66766c; font-size:.9rem; font-weight:600; margin-bottom:.5rem;}
+    .pathway {font-size:clamp(3rem, 8vw, 5.5rem); line-height:1; color:#294f37; font-weight:750; letter-spacing:-.055em; margin:.2rem 0 .75rem;}
+    .result-note {font-size:1.1rem; line-height:1.5; color:#46594d; max-width:760px;}
+</style>
+""", unsafe_allow_html=True)
 CFG = load_config(DATA / "assumptions.csv")
 EXAMPLES = json.loads((DATA / "examples.json").read_text(encoding="utf-8"))
 BUDGET_LABELS = budget_bands(CFG)
@@ -69,7 +90,9 @@ def initialise_state():
         "total_kg": 0.0, "current_collections": 0, "room_m2": 10.0,
         "space_m2": 0.0, "cost_week": 0.0, "local_use": "No", "budget": "low",
         "growth": 0.0, "tenants_df": tenant_frame(), "bins_df": bin_frame(),
-        "show_results": False, "editor_version": 0,
+        "show_results": False, "input_step": "waste", "editor_version": 0,
+        "multiple_bin_types": False, "bin_size": 240, "bin_count": 2,
+        "bin_collections": 2,
     }
     for key, value in defaults.items():
         st.session_state.setdefault(key, value)
@@ -94,8 +117,12 @@ def load_example(key):
         "growth": float(example.get("annual_change_pct") or 0),
         "tenants_df": tenant_frame(example.get("tenants")),
         "bins_df": bin_frame(example["general_waste_bins"]),
+        "bin_size": int(example["general_waste_bins"][0]["size_l"]),
+        "bin_count": int(example["general_waste_bins"][0]["count"]),
+        "bin_collections": int(example["general_waste_bins"][0]["collections_per_week"]),
+        "multiple_bin_types": len(example["general_waste_bins"]) > 1,
         "editor_version": st.session_state.editor_version + 1,
-        "show_results": False,
+        "show_results": False, "input_step": "waste",
     })
 
 
@@ -142,54 +169,33 @@ def collect_inputs(tenants_df, bins_df):
     }
 
 
-def input_page():
-    st.title("Circular Organics Planner")
-    st.write(
-        "Find a practical food-waste pathway for your NSW building. Compare Off-site FOGO, "
-        "Hybrid, and On-site; get a plan and an estimate of landfill methane avoided."
+def example_picker():
+    with st.expander("Try an example"):
+        choice = st.selectbox(
+            "Example building",
+            ["case_1_small_cafe_building", "case_2_shopping_centre_food_court"],
+            format_func=lambda key: ("Small cafe building" if key.startswith("case_1")
+                                     else "Shopping centre food court"),
+            label_visibility="collapsed",
+        )
+        if st.button("Load example"):
+            load_example(choice)
+            st.rerun()
+        st.caption("Examples use illustrative data.")
+
+
+def waste_step():
+    st.markdown('<div class="step">Step 1 of 2 · Waste</div>', unsafe_allow_html=True)
+    st.header("How much food waste does your building generate?")
+    st.write("Use a measured weekly figure if you have one.")
+    st.number_input(
+        "Food waste", min_value=0.0, step=10.0, key="total_kg",
+        help="Leave at zero to estimate from tenants.",
+        label_visibility="collapsed",
     )
-    st.caption("Start with five essentials. You can refine the building profile later.")
-
-    demo_a, demo_b = st.columns(2)
-    if demo_a.button("Try a small cafe building", width="stretch"):
-        load_example("case_1_small_cafe_building")
-        st.rerun()
-    if demo_b.button("Try a shopping centre food court", width="stretch"):
-        load_example("case_2_shopping_centre_food_court")
-        st.rerun()
-    st.caption("Examples are illustrative.")
-
+    st.caption("kg per week")
     version = st.session_state.editor_version
-    left, right = st.columns(2, gap="large")
-    with left:
-        st.subheader("Food waste")
-        st.number_input(
-            "Food waste (kg/week)", min_value=0.0, step=10.0, key="total_kg",
-            help="Use a weighed figure if available. Leave at zero to estimate from tenants below.",
-        )
-        st.subheader("General waste bins")
-        st.caption("Include landfill bins only. Bin size, count, and collection frequency determine the NSW mandate status.")
-        bins = st.data_editor(
-            st.session_state.bins_df, key=f"bins_{version}", num_rows="dynamic",
-            width="stretch",
-            column_config={
-                "Bin size (L)": st.column_config.SelectboxColumn(
-                    options=[120, 240, 360, 660, 1100], required=True),
-                "Count": st.column_config.NumberColumn(min_value=0, step=1, required=True),
-                "Collections/week": st.column_config.NumberColumn(
-                    min_value=0, max_value=14, step=1, required=True),
-            },
-        )
-    with right:
-        st.subheader("On-site fit")
-        st.number_input("Available space for on-site processing (m²)", min_value=0.0,
-                        step=1.0, key="space_m2")
-        st.radio("Local use for processed output?", ["Yes", "No"], horizontal=True,
-                 key="local_use", help="For example, landscaping or a processor contract.")
-        st.selectbox("Budget for on-site equipment", ["low", "medium", "high"],
-                     format_func=lambda key: f"{key.title()}: {BUDGET_LABELS[key]}", key="budget")
-
-    with st.expander("Don't know your weekly food waste? Estimate from tenants"):
+    with st.expander("Estimate from tenants"):
         tenants = st.data_editor(
             st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic",
             width="stretch",
@@ -204,6 +210,57 @@ def input_page():
             },
         )
         st.caption("Tenant estimates are illustrative. A seven-day weighed audit gives a better input.")
+    st.session_state.tenants_draft = tenants
+    if st.button("Continue to site details", type="primary"):
+        provisional = collect_inputs(tenants, bin_frame())
+        if waste_profile(provisional, CFG)["total_kg_week"] <= 0:
+            st.error("Enter weekly food waste or add at least one tenant estimate.")
+        else:
+            st.session_state.tenants_df = tenants
+            st.session_state.input_step = "site"
+            st.rerun()
+    example_picker()
+
+
+def site_step():
+    st.markdown('<div class="step">Step 2 of 2 · Site</div>', unsafe_allow_html=True)
+    st.header("What will work at your site?")
+    st.write("These details determine NSW mandate timing and which pathway fits.")
+    st.subheader("General waste service")
+    st.caption("Landfill bins only — exclude recycling and existing organics bins.")
+    a, b, c = st.columns(3)
+    a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size",
+                format_func=lambda value: f"{value} L")
+    b.number_input("Number of bins", min_value=1, step=1, key="bin_count")
+    c.number_input("Collections per week", min_value=1, max_value=14, step=1,
+                   key="bin_collections")
+
+    st.checkbox("Add another bin type", key="multiple_bin_types")
+    if st.session_state.multiple_bin_types:
+        st.caption("Add each general-waste bin type used at the building.")
+        bins = st.data_editor(
+            st.session_state.bins_df, key=f"bins_{st.session_state.editor_version}",
+            num_rows="dynamic", width="stretch",
+            column_config={
+                "Bin size (L)": st.column_config.SelectboxColumn(
+                    options=[120, 240, 360, 660, 1100], required=True),
+                "Count": st.column_config.NumberColumn(min_value=0, step=1, required=True),
+                "Collections/week": st.column_config.NumberColumn(
+                    min_value=0, max_value=14, step=1, required=True),
+            },
+        )
+    else:
+        bins = bin_frame([{"size_l": st.session_state.bin_size,
+                           "count": st.session_state.bin_count,
+                           "collections_per_week": st.session_state.bin_collections}])
+
+    st.subheader("On-site conditions")
+    a, b, c = st.columns(3)
+    a.number_input("Processing space (m²)", min_value=0.0, step=1.0, key="space_m2")
+    b.radio("Local use for output?", ["Yes", "No"], horizontal=True, key="local_use",
+            help="For example, landscaping or a processor contract.")
+    c.selectbox("Equipment budget", ["low", "medium", "high"],
+                format_func=lambda key: f"{key.title()} · {BUDGET_LABELS[key]}", key="budget")
 
     with st.expander("Advanced details"):
         a, b, c = st.columns(3)
@@ -218,19 +275,34 @@ def input_page():
         c.number_input("Waste room area (m²)", min_value=0.0, step=1.0, key="room_m2")
         a.slider("Expected annual food-waste change (%)", -5.0, 10.0, step=0.5,
                  key="growth")
+    back, submit = st.columns([1, 2])
+    if back.button("← Back"):
+        st.session_state.input_step = "waste"
+        st.rerun()
+    if submit.button("Compare my options", type="primary", width="stretch"):
+        inputs = collect_inputs(st.session_state.tenants_df, bins)
+        st.session_state.update({
+            "inputs": inputs, "result": plan_building(inputs, CFG),
+            "bins_df": bins, "show_results": True,
+            "editor_version": st.session_state.editor_version + 1,
+            "scroll_to_result": True,
+        })
+        st.rerun()
 
-    if st.button("Compare my options", type="primary"):
-        inputs = collect_inputs(tenants, bins)
-        if waste_profile(inputs, CFG)["total_kg_week"] <= 0:
-            st.error("Enter weekly food waste or add at least one tenant estimate.")
-        else:
-            st.session_state.update({
-                "inputs": inputs, "result": plan_building(inputs, CFG),
-                "tenants_df": tenants, "bins_df": bins,
-                "show_results": True, "editor_version": version + 1,
-                "scroll_to_result": True,
-            })
-            st.rerun()
+
+def input_page():
+    st.markdown('<div class="eyebrow">Circular Organics Planner</div>', unsafe_allow_html=True)
+    st.title("Find the right food-waste setup for your building.")
+    st.markdown(
+        '<div class="lead">Turn your waste volume and site conditions into a clear pathway, '
+        'a practical collection plan, and an estimate of landfill methane avoided.</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown("---")
+    if st.session_state.input_step == "waste":
+        waste_step()
+    else:
+        site_step()
 
 
 def mandate_banner(mandate):
