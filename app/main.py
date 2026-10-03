@@ -98,6 +98,7 @@ INPUT_KEYS = (
     "building_name", "building_type", "tenant_count", "total_kg", "current_collections",
     "room_m2", "space_m2", "cost_week", "local_use", "budget", "growth",
 )
+REQUIRED_RESULT_FIELDS = frozenset({"tradeoff", "next_decision_point", "evidence_summary"})
 
 
 def tenant_frame(rows=None):
@@ -208,6 +209,28 @@ def collect_inputs(tenants_df, bins_df):
         "current_collection_cost_aud_week": float(state.cost_week) or None,
         "annual_change_pct": float(state.growth),
     }
+
+
+def stored_result_for_render():
+    """Return a current-schema result, rebuilding only stale stored results."""
+    result = st.session_state.get("result")
+    if isinstance(result, dict) and REQUIRED_RESULT_FIELDS.issubset(result):
+        return result
+
+    inputs = st.session_state.get("inputs")
+    if not isinstance(inputs, dict):
+        st.session_state.show_results = False
+        st.session_state.pop("result", None)
+        return None
+
+    try:
+        refreshed = plan_building(inputs, CFG)
+    except (KeyError, TypeError, ValueError):
+        st.session_state.show_results = False
+        st.session_state.pop("result", None)
+        return None
+    st.session_state.result = refreshed
+    return refreshed
 
 
 def example_picker():
@@ -691,6 +714,10 @@ top_header()
 if st.session_state.view == "about":
     about_page()
 elif st.session_state.show_results and "result" in st.session_state:
-    results_page(st.session_state.result)
+    result = stored_result_for_render()
+    if result is not None:
+        results_page(result)
+    else:
+        input_page()
 else:
     input_page()
