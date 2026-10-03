@@ -30,7 +30,7 @@ st.markdown("""
     .stApp {background: #0F1318; color: #F4F6F8; font-family: Inter, Arial, sans-serif;}
     .stMainBlockContainer {max-width: 1120px; padding-top: 1.35rem; padding-bottom: 4.5rem;}
     h1, h2, h3 {font-family: Manrope, Inter, Arial, sans-serif; letter-spacing: -.035em; color: #F4F6F8;}
-    h1 {font-size: clamp(2.4rem, 4.5vw, 4.2rem); line-height: 1.05; margin-bottom: .7rem;}
+    h1 {font-size: clamp(2.6rem, 4.7vw, 4.35rem); line-height: 1.05; margin-bottom: .7rem;}
     h2 {font-size: 1.55rem; margin-top: 1.9rem;}
     h3 {font-size: 1.05rem; letter-spacing: -.015em;}
     p, li {color: #A9B0B8; line-height: 1.6;}
@@ -46,7 +46,8 @@ st.markdown("""
     .stButton > button[kind="secondary"] {background:transparent; color:#A9B0B8; border-color:transparent;}
     .st-key-load_example_button button {background:#1D232B !important; border-color:#3A424C !important; color:#F4F6F8 !important; min-height:2.55rem !important;}
     .st-key-load_example_button button:hover {background:#252C35 !important; border-color:#4A5561 !important;}
-    div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#2A313A; border-radius:8px; background:#171C22; color:#F4F6F8; min-height:2.8rem;}
+    div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#2A313A; border-radius:8px; background:#171C22; color:#F4F6F8; min-height:3rem;}
+    [data-testid="stWidgetLabel"] p {font-size:.92rem; font-weight:500; color:#F4F6F8;}
     div[data-baseweb="select"] span, div[data-baseweb="select"] svg {color:#F4F6F8; fill:#F4F6F8;}
     [data-testid="stNumberInput"] button {display:none;}
     [data-testid="stNumberInput"] input {color:#F4F6F8; font-variant-numeric:tabular-nums;}
@@ -57,7 +58,7 @@ st.markdown("""
     [data-testid="stCheckbox"] {margin-top:.1rem;}
     [data-testid="stCheckbox"] label {font-size:.78rem; color:#737B85;}
     [data-testid="stAlert"] {border-radius:8px; background:#171C22; border-color:#2A313A;}
-    .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3.2rem, 7vw, 5.8rem); line-height:.95; color:#F4F6F8; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
+    .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3rem, 6.2vw, 5.1rem); line-height:.95; color:#F4F6F8; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
     .result-note {font-size:1.08rem; line-height:1.55; color:#A9B0B8; max-width:520px;}
     .status {border-left:2px solid #23865B; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#A9B0B8; font-size:.9rem; line-height:1.45;}
     .status strong {color:#2C9A69;}
@@ -130,7 +131,8 @@ def initialise_state():
         "growth": 0.0, "tenants_df": tenant_frame(), "bins_df": bin_frame(),
         "show_results": False, "view": "planner", "editor_version": 0,
         "multiple_bin_types": False, "bin_size": 240, "bin_count": 2,
-        "bin_collections": 2,
+        "bin_collections": 2, "food_waste_entry": "I know the amount",
+        "demo_loaded": None,
     }
     for key, value in defaults.items():
         st.session_state.setdefault(key, value)
@@ -160,7 +162,8 @@ def load_example(key):
         "bin_collections": int(example["general_waste_bins"][0]["collections_per_week"]),
         "multiple_bin_types": len(example["general_waste_bins"]) > 1,
         "editor_version": st.session_state.editor_version + 1,
-        "show_results": False, "view": "planner",
+        "show_results": False, "view": "planner", "food_waste_entry": "I know the amount",
+        "demo_loaded": key,
     })
 
 
@@ -208,25 +211,34 @@ def collect_inputs(tenants_df, bins_df):
 
 
 def example_picker():
-    with st.expander("Try an example →"):
+    with st.expander("Try a demo →"):
         choice = st.selectbox(
             "Example building",
             ["case_1_small_cafe_building", "case_2_shopping_centre_food_court"],
-            format_func=lambda key: ("Small cafe building" if key.startswith("case_1")
+            format_func=lambda key: ("Small café" if key.startswith("case_1")
                                      else "Shopping centre food court"),
             label_visibility="collapsed",
         )
         st.button("Load example", key="load_example_button", on_click=load_example, args=(choice,))
+    if st.session_state.demo_loaded:
+        label = "Small café" if st.session_state.demo_loaded.startswith("case_1") else "Shopping centre"
+        st.caption(f"{label} example loaded — all values can still be edited.")
 
 
 def planner_workspace():
     st.markdown('<div class="section-label">Waste service</div>', unsafe_allow_html=True)
-    waste_input, _ = st.columns([1, 3.2])
-    with waste_input:
-        st.number_input("Weekly food waste", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
-        st.caption("kg/week")
+    st.subheader("Food waste")
+    entry_mode = st.radio("Food waste entry", ["I know the amount", "Estimate it"], horizontal=True,
+                          key="food_waste_entry", label_visibility="collapsed")
     version = st.session_state.editor_version
-    with st.expander("Estimate from tenants →"):
+    tenants = st.session_state.tenants_df
+    if entry_mode == "I know the amount":
+        waste_input, unit, _ = st.columns([1, .45, 2.75])
+        with waste_input:
+            st.number_input("Weekly food waste", min_value=0.0, step=10.0, format="%.0f", key="total_kg")
+        unit.markdown('<div style="padding-top:2.4rem;color:#A9B0B8;font-size:.9rem">kg/week</div>', unsafe_allow_html=True)
+    else:
+        st.caption("Estimate weekly food waste from the tenant mix.")
         tenants = st.data_editor(st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic", width="stretch", column_config={
             "Tenant": st.column_config.TextColumn(required=True),
             "Type": st.column_config.SelectboxColumn(options=list(TENANT_TYPES.values()), required=True),
@@ -235,7 +247,7 @@ def planner_workspace():
             "Measured kg/week": st.column_config.NumberColumn(min_value=0, help="Optional weighed amount; replaces the type estimate."),
         })
 
-    st.subheader("General waste service")
+    st.subheader("General waste service", help="Used to check when NSW FOGO requirements are likely to apply.")
     a, b, c, _ = st.columns([1, 1, 1, 1.2])
     a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size", help="Used to check your likely NSW FOGO requirement.",
                 format_func=lambda value: f"{value} L")
@@ -264,10 +276,10 @@ def planner_workspace():
 
     st.markdown('<div class="section-label">On-site capability</div>', unsafe_allow_html=True)
     a, b, c, _ = st.columns([1, 1.35, 1, 1.15])
-    a.number_input("On-site space (m²)", min_value=0.0, step=1.0, key="space_m2")
+    a.number_input("On-site space (m²)", min_value=0.0, step=1.0, format="%.0f", key="space_m2")
     b.radio("Local use", ["Yes", "No"], horizontal=True, key="local_use", help="Can processed material be used on site or nearby?")
-    c.selectbox("Budget", ["low", "medium", "high"],
-                format_func=lambda key: f"{key.title()} · {BUDGET_LABELS[key]}", key="budget")
+    c.radio("Budget", ["low", "medium", "high"], horizontal=True,
+            format_func=str.title, key="budget")
 
     with st.expander("Advanced details"):
         a, b, c = st.columns(3)
@@ -284,6 +296,8 @@ def planner_workspace():
                  key="growth")
     if st.button("Compare pathways →", type="primary"):
         inputs = collect_inputs(tenants, bins)
+        if entry_mode == "Estimate it":
+            inputs["total_food_waste_kg_week"] = None
         if waste_profile(inputs, CFG)["total_kg_week"] <= 0:
             st.error("Enter weekly food waste or add at least one tenant estimate.")
             return
@@ -424,6 +438,26 @@ def pathway_summary(pathway):
     }[pathway]
 
 
+def outlook_copy(result):
+    future = next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)
+    current_pathway = result["recommendation"]["label"]
+    if current_pathway == future["pathway"]:
+        return f"{current_pathway} remains suitable at the projected {future['food_waste_kg_week']:,.0f} kg/week."
+    return (f"The recommended pathway moves from {current_pathway} to {future['pathway']} by 2035 "
+            f"at the projected {future['food_waste_kg_week']:,.0f} kg/week.")
+
+
+def next_step_copy(plan):
+    if plan["pathway"] == "offsite":
+        return (f"Set up {plan['bins']} × {plan['bin_size_l']} L FOGO bins with "
+                f"{plan['collections_per_week']} collections per week.")
+    if plan["pathway"] == "hybrid":
+        return (f"Process {plan['onsite_kg_week']:,.0f} kg/week on site and send the remaining "
+                f"{plan['offsite_kg_week']:,.0f} kg/week through FOGO.")
+    return (f"Prepare the site to process {plan['onsite_kg_week']:,.0f} kg/week on site and send "
+            f"the remaining {plan['offsite_kg_week']:,.0f} kg/week through FOGO.")
+
+
 def overview_tab(result):
     rec, plan = result["recommendation"], result["plan"]
     hero, status = st.columns([3, 1], gap="large")
@@ -452,6 +486,10 @@ def overview_tab(result):
 
     st.subheader(f"Why {rec['label']}")
     st.markdown("".join(f'<div class="reason"><span class="check">✓</span><span>{escape(reason)}</span></div>' for reason in rec["reasons"][:3]), unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Next step</div>', unsafe_allow_html=True)
+    st.write(next_step_copy(plan))
+    st.markdown(f'<div class="section-label">Looking ahead · 2035</div>', unsafe_allow_html=True)
+    st.write(outlook_copy(result))
     if rec["r5_note"]:
         st.info(rec["r5_note"])
     if rec["warnings"]:
@@ -476,15 +514,7 @@ def plan_tab(result):
     st.markdown("**Next steps**")
     st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
 
-    future = next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)
-    current_pathway = result["recommendation"]["label"]
-    if current_pathway == future["pathway"]:
-        outlook = f"{current_pathway} remains suitable at the projected {future['food_waste_kg_week']:,.0f} kg/week."
-    else:
-        outlook = (f"The recommended pathway moves from {current_pathway} to "
-                   f"{future['pathway']} by 2035 at the projected "
-                   f"{future['food_waste_kg_week']:,.0f} kg/week.")
-    st.markdown(f"**2035 outlook** — {outlook}")
+    st.markdown(f"**2035 outlook** — {outlook_copy(result)}")
     with st.expander("Explore 2035 projection →"):
         roadmap = pd.DataFrame(result["roadmap"]["rows"])
         st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])
