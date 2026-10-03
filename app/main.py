@@ -3,6 +3,7 @@
 All planning decisions and calculated values come from app.engine.
 """
 import json
+import inspect
 import sys
 from pathlib import Path
 
@@ -329,13 +330,24 @@ def methodology():
     evidence()
 
 
-def results_page(result):
-    rec, plan = result["recommendation"], result["plan"]
-    if st.session_state.pop("scroll_to_result", False):
+def scroll_to_top():
+    """Return to the answer after switching from the longer input screen."""
+    if hasattr(st, "html") and "unsafe_allow_javascript" in inspect.signature(st.html).parameters:
+        st.html(
+            "<script>document.querySelector('section.stMain')?.scrollTo(0, 0)</script>",
+            unsafe_allow_javascript=True,
+        )
+    else:
         components.html(
             "<script>window.parent.document.querySelector('section.stMain')?.scrollTo(0, 0)</script>",
             height=0,
         )
+
+
+def results_page(result):
+    rec, plan = result["recommendation"], result["plan"]
+    if st.session_state.pop("scroll_to_result", False):
+        scroll_to_top()
     with st.container(border=True):
         st.caption("YOUR RECOMMENDATION")
         st.header(rec["label"])
