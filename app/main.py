@@ -35,15 +35,11 @@ st.markdown("""
     h3 {font-size: 1.05rem; letter-spacing: -.015em;}
     p, li {color: #3f4943; line-height: 1.6;}
     hr {border-color: #E2E6E3; margin: 2.25rem 0;}
-    .eyebrow {color:#B89B5E; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+    .eyebrow {color:#6C756F; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+    .plan-eyebrow {color:#B89B5E; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
     .lead {font-size:1.12rem; line-height:1.65; max-width:760px; color:#6C756F;}
     .brand {font-family: Manrope, Inter, sans-serif; font-weight:800; font-size:1rem; color:#17201B; letter-spacing:-.025em; padding:.48rem 0 1.25rem;}
-    .workspace-note {border-left:2px solid #B89B5E; padding: .15rem 0 .15rem 1.2rem; margin: .75rem 0 1.5rem;}
-    .guide {background:#FFFFFF; border:1px solid #E2E6E3; border-radius:12px; padding:1.5rem; margin-top:1.1rem;}
-    .guide-title {font-family:Manrope, Inter, sans-serif; font-weight:800; color:#17201B; margin:.15rem 0 1.1rem;}
-    .guide-row {display:flex; gap:.8rem; margin:1rem 0; color:#6C756F; line-height:1.45; font-size:.92rem;}
-    .guide-number {font-family:Manrope, Inter, sans-serif; color:#B89B5E; font-weight:800; font-size:.75rem; letter-spacing:.06em; padding-top:.08rem;}
-    .guide strong {display:block; color:#17201B; font-size:.9rem; margin-bottom:.13rem;}
+    .section-label {color:#1F5C45; font-family:Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin:1.8rem 0 .55rem;}
     .stButton > button {border-radius:8px; border-color:#C9D1CC; font-family:Manrope, Inter, sans-serif; font-weight:700; min-height:2.55rem;}
     .stButton > button[kind="primary"] {background:#1F5C45; border-color:#1F5C45; color:#fff; padding:.55rem 1.2rem;}
     .stButton > button[kind="primary"]:hover {background:#174735; border-color:#174735;}
@@ -68,10 +64,13 @@ st.markdown("""
     .stat-label {font-size:.76rem; color:#6C756F; text-transform:uppercase; letter-spacing:.08em; font-weight:700;}
     .stat-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#17201B; font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin:.12rem 0;}
     .stat-detail {font-size:.85rem; color:#6C756F;}
-    .climate {background:#EAF1ED; border-radius:10px; padding:1.5rem 1.6rem; margin:1.8rem 0 .7rem;}
+    .climate {border-left:2px solid #1F5C45; padding:.25rem 0 .25rem 1.25rem; margin:2rem 0 .7rem;}
     .climate-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#1F5C45; font-size:clamp(2.8rem, 5vw, 4.2rem); line-height:1; font-weight:800; letter-spacing:-.065em; margin:.35rem 0;}
     .reason {display:flex; gap:.7rem; align-items:flex-start; border-top:1px solid #E2E6E3; padding:.85rem 0; color:#3f4943;}
     .check {color:#2E6B4F; font-family:Manrope, Inter, sans-serif; font-weight:800;}
+    .path-status {display:flex; justify-content:space-between; border-top:1px solid #E2E6E3; padding:.7rem 0; font-size:.92rem;}
+    .path-status strong {font-family:Manrope, Inter, sans-serif; color:#17201B;}
+    .path-status span {color:#6C756F;}
 </style>
 """, unsafe_allow_html=True)
 CFG = load_config(DATA / "assumptions.csv")
@@ -203,7 +202,7 @@ def collect_inputs(tenants_df, bins_df):
 
 
 def example_picker():
-    with st.expander("Try an example"):
+    with st.expander("Try an example →"):
         choice = st.selectbox(
             "Example building",
             ["case_1_small_cafe_building", "case_2_shopping_centre_food_court"],
@@ -212,15 +211,14 @@ def example_picker():
             label_visibility="collapsed",
         )
         st.button("Load example", on_click=load_example, args=(choice,))
-        st.caption("Examples use illustrative data.")
 
 
 def planner_workspace():
-    st.subheader("Building inputs")
-    st.markdown('<div class="workspace-note">Enter a measured weekly food-waste figure where available. The planner can estimate from tenants if you do not yet have an audit.</div>', unsafe_allow_html=True)
-    st.number_input("Weekly food waste (kg)", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
+    st.markdown('<div class="section-label">Waste</div>', unsafe_allow_html=True)
+    st.number_input("Weekly food waste", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
+    st.caption("kg/week")
     version = st.session_state.editor_version
-    with st.expander("Estimate from tenants"):
+    with st.expander("Estimate from tenants →"):
         tenants = st.data_editor(st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic", width="stretch", column_config={
             "Tenant": st.column_config.TextColumn(required=True),
             "Type": st.column_config.SelectboxColumn(options=list(TENANT_TYPES.values()), required=True),
@@ -228,12 +226,10 @@ def planner_workspace():
             "Count": st.column_config.NumberColumn(min_value=1, step=1, required=True),
             "Measured kg/week": st.column_config.NumberColumn(min_value=0, help="Optional weighed amount; replaces the type estimate."),
         })
-        st.caption("Tenant estimates are illustrative. A seven-day weighed audit provides a stronger input.")
 
-    st.subheader("Current general-waste service")
-    st.caption("Landfill bins only — exclude recycling and existing organics bins.")
+    st.subheader("General waste service")
     a, b, c = st.columns(3)
-    a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size",
+    a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size", help="Used to check your likely NSW FOGO requirement.",
                 format_func=lambda value: f"{value} L")
     b.number_input("Number of bins", min_value=1, step=1, key="bin_count")
     c.number_input("Collections per week", min_value=1, max_value=14, step=1,
@@ -258,11 +254,10 @@ def planner_workspace():
                            "count": st.session_state.bin_count,
                            "collections_per_week": st.session_state.bin_collections}])
 
-    st.subheader("On-site conditions")
+    st.markdown('<div class="section-label">Site</div>', unsafe_allow_html=True)
     a, b, c = st.columns(3)
-    a.number_input("Processing space (m²)", min_value=0.0, step=1.0, key="space_m2")
-    b.radio("Local use for output?", ["Yes", "No"], horizontal=True, key="local_use",
-            help="For example, landscaping or a processor contract.")
+    a.number_input("On-site processing space (m²)", min_value=0.0, step=1.0, key="space_m2")
+    b.radio("Can processed material be used on-site or nearby?", ["Yes", "No"], horizontal=True, key="local_use")
     c.selectbox("Equipment budget", ["low", "medium", "high"],
                 format_func=lambda key: f"{key.title()} · {BUDGET_LABELS[key]}", key="budget")
 
@@ -294,23 +289,9 @@ def planner_workspace():
 
 
 def input_page():
-    st.markdown('<div class="eyebrow">NSW food-waste pathway planning</div>', unsafe_allow_html=True)
-    st.title("A clearer path for commercial food waste.")
-    st.markdown(
-        '<div class="lead">Compare off-site FOGO, hybrid and on-site options using your building’s waste service and operating conditions.</div>',
-        unsafe_allow_html=True,
-    )
-    workspace, guide = st.columns([1.85, 1], gap="large")
-    with workspace:
-        planner_workspace()
-    with guide:
-        st.markdown("""
-        <div class="guide"><div class="eyebrow">Decision brief</div><div class="guide-title">What this workspace compares</div>
-        <div class="guide-row"><div class="guide-number">01</div><div><strong>Pathways</strong>Off-site FOGO, hybrid processing and on-site processing.</div></div>
-        <div class="guide-row"><div class="guide-number">02</div><div><strong>Operational fit</strong>Waste volume, bin service, space, local use and budget.</div></div>
-        <div class="guide-row"><div class="guide-number">03</div><div><strong>Practical output</strong>A recommended setup, collection plan and evidence to take to procurement.</div></div></div>
-        """, unsafe_allow_html=True)
-        example_picker()
+    st.title("Find the right food-waste setup for your building.")
+    planner_workspace()
+    example_picker()
 
 
 def mandate_status(mandate):
@@ -437,10 +418,9 @@ def overview_tab(result):
     rec, plan = result["recommendation"], result["plan"]
     hero, status = st.columns([3, 1], gap="large")
     with hero:
-        st.markdown('<div class="eyebrow">Your plan</div>', unsafe_allow_html=True)
+        st.markdown('<div class="plan-eyebrow">Your plan</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="pathway">{escape(rec["label"])}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="result-note">{pathway_summary(rec["pathway"])}</div>', unsafe_allow_html=True)
-        st.caption(f"{result['building_name'] or 'Your building'} · {result['waste_profile']['total_kg_week']:,.0f} kg food waste/week")
+        st.caption("Recommended pathway")
     with status:
         st.markdown(mandate_status(result["mandate"]), unsafe_allow_html=True)
 
@@ -450,24 +430,19 @@ def overview_tab(result):
     st.markdown(f'''<div class="allocation"><div class="allocation-labels"><span><strong>{plan['onsite_kg_week']:,.0f} kg/week</strong><br>processed on site</span><span style="text-align:right"><strong>{plan['offsite_kg_week']:,.0f} kg/week</strong><br>sent off site</span></div><div class="allocation-bar"><div class="allocation-onsite" style="width:{onsite_pct:.2f}%"></div><div class="allocation-offsite" style="width:{100-onsite_pct:.2f}%"></div></div></div>''', unsafe_allow_html=True)
 
     st.markdown('<div class="eyebrow">Operation</div>', unsafe_allow_html=True)
-    bins, collections, cost = st.columns(3)
+    bins, collections = st.columns(2)
     bins.markdown(f'<div class="stat"><div class="stat-label">FOGO bins</div><div class="stat-value">{plan["bins"]} × {plan["bin_size_l"]} L</div><div class="stat-detail">planned container service</div></div>', unsafe_allow_html=True)
     collections.markdown(f'<div class="stat"><div class="stat-label">Collections</div><div class="stat-value">{plan["collections_per_week"]}/week</div><div class="stat-detail">{" · ".join(plan["collection_days"])}</div></div>', unsafe_allow_html=True)
-    cost.markdown(f'<div class="stat"><div class="stat-label">Indicative collection</div><div class="stat-value">${plan["collection_cost_aud_week"]:,.0f}</div><div class="stat-detail">AUD/week ex GST</div></div>', unsafe_allow_html=True)
 
     methane = plan["ch4_avoided_kg_year"]
     st.markdown(f'<div class="climate"><div class="eyebrow">Climate impact</div><div class="climate-value">{methane["base"]:,.0f}</div><div>kg CH₄/year of landfill methane avoided under the planning scenario.</div></div>', unsafe_allow_html=True)
     with st.expander("View climate assumptions"):
         st.write(f"Planning range: **{range_text(methane)} kg CH₄/year**. The range reflects the low, base and high values in the evidence sheet.")
 
-    st.subheader("Why this pathway")
+    st.subheader(f"Why {rec['label']}")
     st.markdown("".join(f'<div class="reason"><span class="check">✓</span><span>{escape(reason)}</span></div>' for reason in rec["reasons"][:3]), unsafe_allow_html=True)
     if rec["r5_note"]:
         st.info(rec["r5_note"])
-    with st.expander("What could change this recommendation?"):
-        st.write(rec["what_would_change"])
-        for pathway, reasons in rec["rejected"].items():
-            st.caption(f"{LABELS[pathway]}: {'; '.join(reasons)}")
     if rec["warnings"]:
         with st.expander("Warnings and site checks"):
             for warning in rec["warnings"]:
@@ -476,14 +451,9 @@ def overview_tab(result):
 
 def plan_tab(result):
     plan = result["plan"]
-    st.header("Put the recommendation into practice")
-    st.subheader("Waste allocation")
-    a, b, c = st.columns(3)
-    a.metric("Generated", f"{result['waste_profile']['total_kg_week']:,.0f} kg/week")
-    b.metric("Processed on site", f"{plan['onsite_kg_week']:,.0f} kg/week")
-    c.metric("Sent off site", f"{plan['offsite_kg_week']:,.0f} kg/week")
-
-    st.subheader("Collection setup")
+    st.subheader("Implementation plan")
+    st.markdown(f"**{plan['onsite_kg_week']:,.0f} kg/week** processed on site · **{plan['offsite_kg_week']:,.0f} kg/week** sent off site")
+    st.markdown("**Collection setup**")
     st.write(f"**{plan['bins']} × {plan['bin_size_l']} L FOGO bins**, collected "
              f"**{plan['collections_per_week']} times per week**.")
     st.write("Collection days: " + (" · ".join(plan["collection_days"]) or "None"))
@@ -492,14 +462,12 @@ def plan_tab(result):
     if plan["local_use_line"]:
         st.success(plan["local_use_line"])
 
-    st.subheader("Next steps")
+    st.markdown("**Next steps**")
     st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
 
     future = next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)
-    st.subheader("Build for 2035")
-    st.info(f"At a projected {future['food_waste_kg_week']:,.0f} kg/week in 2035, "
-            f"the recommended pathway is **{future['pathway']}**.")
-    with st.expander("View detailed 2035 projection"):
+    st.markdown(f"**2035 outlook** — {future['pathway']} remains suitable at the projected {future['food_waste_kg_week']:,.0f} kg/week.")
+    with st.expander("Explore 2035 projection →"):
         roadmap = pd.DataFrame(result["roadmap"]["rows"])
         st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])
         st.dataframe(roadmap, hide_index=True, width="stretch")
@@ -508,18 +476,16 @@ def plan_tab(result):
                    f"{result['roadmap']['note']}")
 
 
-def compare_tab(result):
+def why_recommendation(result):
     rec = result["recommendation"]
-    st.header("Compare pathways")
-    st.write("A concise operating view of the available options. The recommendation is marked in the matrix.")
-    simple_comparison(result)
+    for pathway in PATHWAYS:
+        status = "Recommended" if pathway == rec["pathway"] else "Not selected"
+        st.markdown(f'<div class="path-status"><strong>{escape(LABELS[pathway])}</strong><span>{status}</span></div>', unsafe_allow_html=True)
+    st.write(rec["what_would_change"])
+    for pathway, reasons in rec["rejected"].items():
+        st.caption(f"{LABELS[pathway]}: {'; '.join(reasons)}")
     with st.expander("View full technical comparison"):
         full_comparison(result, st.session_state.inputs["local_use"])
-        chosen = result["comparison"][rec["pathway"]]
-        st.caption(f"Of {result['waste_profile']['total_kg_week']:,.0f} kg/week generated, "
-                   f"{chosen['captured_kg_week']:,.0f} kg/week is expected to be separated and "
-                   f"{chosen['uncaptured_kg_week']:,.0f} kg/week remains uncaptured.")
-    mandate_details(result["mandate"])
 
 
 def evidence_tab(result):
@@ -542,19 +508,23 @@ def results_page(result):
     if st.session_state.pop("scroll_to_result", False):
         scroll_to_top()
     top_left, top_right = st.columns([4, 1])
-    top_left.markdown('<div class="eyebrow">Decision output</div>', unsafe_allow_html=True)
     if top_right.button("← Edit inputs"):
         st.session_state.show_results = False
         st.rerun()
-    overview, plan, compare, evidence_view = st.tabs(["Overview", "Plan", "Compare", "Evidence"])
-    with overview:
-        overview_tab(result)
-    with plan:
+    overview_tab(result)
+    with st.expander("View implementation plan →"):
         plan_tab(result)
-    with compare:
-        compare_tab(result)
-    with evidence_view:
-        evidence_tab(result)
+    with st.expander("Why this recommendation?"):
+        why_recommendation(result)
+    with st.expander("Methodology & sources"):
+        st.caption("All calculations use documented assumptions, source links and confidence levels.")
+        mandate_details(result["mandate"])
+        profile = result["waste_profile"]
+        if profile["tenants"]:
+            with st.expander("View waste by tenant"):
+                table = pd.DataFrame(profile["tenants"])
+                st.dataframe(table[["name", "size", "count", "kg_week", "estimated"]], hide_index=True, width="stretch")
+        methodology()
 
 
 def about_page():
