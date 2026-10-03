@@ -27,50 +27,52 @@ st.markdown("""
     #MainMenu, footer {visibility: hidden;}
     header[data-testid="stHeader"] {background: transparent;}
     [data-testid="stSidebar"] {display: none;}
-    .stApp {background: #F7F7F3; color: #17201B; font-family: Inter, Arial, sans-serif;}
-    .stMainBlockContainer {max-width: 1240px; padding-top: 1.35rem; padding-bottom: 4.5rem;}
-    h1, h2, h3 {font-family: Manrope, Inter, Arial, sans-serif; letter-spacing: -.035em; color: #17201B;}
+    .stApp {background: #0F1318; color: #F4F6F8; font-family: Inter, Arial, sans-serif;}
+    .stMainBlockContainer {max-width: 1120px; padding-top: 1.35rem; padding-bottom: 4.5rem;}
+    h1, h2, h3 {font-family: Manrope, Inter, Arial, sans-serif; letter-spacing: -.035em; color: #F4F6F8;}
     h1 {font-size: clamp(2.4rem, 4.5vw, 4.2rem); line-height: 1.05; margin-bottom: .7rem;}
     h2 {font-size: 1.55rem; margin-top: 1.9rem;}
     h3 {font-size: 1.05rem; letter-spacing: -.015em;}
-    p, li {color: #3f4943; line-height: 1.6;}
-    hr {border-color: #E2E6E3; margin: 2.25rem 0;}
-    .eyebrow {color:#6C756F; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+    p, li {color: #A9B0B8; line-height: 1.6;}
+    hr {border-color: #2A313A; margin: 2.25rem 0;}
+    .eyebrow {color:#A9B0B8; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
     .plan-eyebrow {color:#B89B5E; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
-    .lead {font-size:1.12rem; line-height:1.65; max-width:760px; color:#6C756F;}
-    .brand {font-family: Manrope, Inter, sans-serif; font-weight:800; font-size:1rem; color:#17201B; letter-spacing:-.025em; padding:.48rem 0 1.25rem;}
-    .section-label {color:#1F5C45; font-family:Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin:1.8rem 0 .55rem;}
-    .stButton > button {border-radius:8px; border-color:#C9D1CC; font-family:Manrope, Inter, sans-serif; font-weight:700; min-height:2.55rem;}
-    .stButton > button[kind="primary"] {background:#1F5C45; border-color:#1F5C45; color:#fff; padding:.55rem 1.2rem;}
-    .stButton > button[kind="primary"]:hover {background:#174735; border-color:#174735;}
-    .stButton > button[kind="secondary"] {background:transparent; color:#1F5C45;}
-    div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#C9D1CC; border-radius:8px; background:#fff;}
-    [data-testid="stDataFrame"], [data-testid="stDataEditor"] {border:1px solid #E2E6E3; border-radius:8px; overflow:hidden;}
-    [data-testid="stExpander"] {background:#FFFFFF; border:1px solid #E2E6E3; border-radius:8px;}
-    [data-testid="stAlert"] {border-radius:8px;}
-    .stTabs [data-baseweb="tab-list"] {gap:1.7rem; border-bottom:1px solid #E2E6E3;}
-    .stTabs [data-baseweb="tab"] {padding:.55rem 0 .65rem; height:auto; font-family:Manrope, Inter, sans-serif; font-size:.9rem; font-weight:700; color:#6C756F;}
-    .stTabs [aria-selected="true"] {color:#1F5C45; border-bottom:2px solid #1F5C45;}
-    .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3.2rem, 7vw, 5.8rem); line-height:.95; color:#17201B; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
-    .result-note {font-size:1.08rem; line-height:1.55; color:#6C756F; max-width:690px;}
-    .status {border-left:2px solid #1F5C45; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#3f4943; font-size:.9rem; line-height:1.45;}
-    .status strong {color:#1F5C45;}
-    .allocation {margin:1.1rem 0 1.8rem;}
-    .allocation-labels {display:flex; justify-content:space-between; gap:1rem; color:#6C756F; font-size:.83rem; margin-bottom:.55rem;}
-    .allocation-labels strong {color:#17201B; font-family:Manrope, Inter, sans-serif;}
-    .allocation-bar {display:flex; height:12px; border-radius:99px; overflow:hidden; background:#EAF1ED;}
-    .allocation-onsite {background:#1F5C45;}.allocation-offsite {background:#B89B5E;}
-    .stat {border-top:1px solid #E2E6E3; padding-top:.8rem; margin-top:.25rem;}
-    .stat-label {font-size:.76rem; color:#6C756F; text-transform:uppercase; letter-spacing:.08em; font-weight:700;}
-    .stat-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#17201B; font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin:.12rem 0;}
-    .stat-detail {font-size:.85rem; color:#6C756F;}
-    .climate {border-left:2px solid #1F5C45; padding:.25rem 0 .25rem 1.25rem; margin:2rem 0 .7rem;}
-    .climate-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#1F5C45; font-size:clamp(2.8rem, 5vw, 4.2rem); line-height:1; font-weight:800; letter-spacing:-.065em; margin:.35rem 0;}
-    .reason {display:flex; gap:.7rem; align-items:flex-start; border-top:1px solid #E2E6E3; padding:.85rem 0; color:#3f4943;}
-    .check {color:#2E6B4F; font-family:Manrope, Inter, sans-serif; font-weight:800;}
-    .path-status {display:flex; justify-content:space-between; border-top:1px solid #E2E6E3; padding:.7rem 0; font-size:.92rem;}
-    .path-status strong {font-family:Manrope, Inter, sans-serif; color:#17201B;}
-    .path-status span {color:#6C756F;}
+    .lead {font-size:1.12rem; line-height:1.65; max-width:760px; color:#A9B0B8;}
+    .brand {font-family: Manrope, Inter, sans-serif; font-weight:800; font-size:1rem; color:#F4F6F8; letter-spacing:-.025em; padding:.48rem 0 1.25rem;}
+    .section-label {color:#A9B0B8; font-family:Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin:2.3rem 0 .75rem;}
+    .stButton > button {border-radius:9px; border-color:#3A424C; background:#1D232B; color:#F4F6F8; font-family:Manrope, Inter, sans-serif; font-weight:700; min-height:2.7rem;}
+    .stButton > button[kind="primary"] {background:#2FA36B; border-color:#2FA36B; color:#F4F6F8; min-height:3.1rem; padding:.65rem 1.35rem;}
+    .stButton > button[kind="primary"]:hover {background:#39B97C; border-color:#39B97C;}
+    .stButton > button[kind="secondary"] {background:transparent; color:#A9B0B8; border-color:transparent;}
+    div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#2A313A; border-radius:8px; background:#171C22; color:#F4F6F8; min-height:2.8rem;}
+    div[data-baseweb="select"] span, div[data-baseweb="select"] svg {color:#F4F6F8; fill:#F4F6F8;}
+    [data-testid="stNumberInput"] button {display:none;}
+    [data-testid="stNumberInput"] input {color:#F4F6F8; font-variant-numeric:tabular-nums;}
+    [data-testid="stDataFrame"], [data-testid="stDataEditor"] {border:1px solid #2A313A; border-radius:8px; overflow:hidden;}
+    [data-testid="stExpander"] {background:transparent; border:0; border-radius:0;}
+    [data-testid="stExpander"] details {background:transparent !important; border:0 !important; border-radius:0 !important;}
+    [data-testid="stExpander"] summary {color:#A9B0B8; font-size:.9rem; padding:0 !important;}
+    [data-testid="stAlert"] {border-radius:8px; background:#171C22; border-color:#2A313A;}
+    .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3.2rem, 7vw, 5.8rem); line-height:.95; color:#F4F6F8; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
+    .result-note {font-size:1.08rem; line-height:1.55; color:#A9B0B8; max-width:520px;}
+    .status {border-left:2px solid #2FA36B; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#A9B0B8; font-size:.9rem; line-height:1.45;}
+    .status strong {color:#39B97C;}
+    .allocation {margin:1.1rem 0 1.8rem; max-width:760px;}
+    .allocation-labels {display:flex; justify-content:space-between; gap:1rem; color:#A9B0B8; font-size:.83rem; margin-bottom:.55rem;}
+    .allocation-labels strong {color:#F4F6F8; font-family:Manrope, Inter, sans-serif;}
+    .allocation-bar {display:flex; height:12px; border-radius:99px; overflow:hidden; background:#2A313A;}
+    .allocation-onsite {background:#2FA36B;}.allocation-offsite {background:#B89B5E;}
+    .stat {border-top:1px solid #2A313A; padding-top:.8rem; margin-top:.25rem;}
+    .stat-label {font-size:.76rem; color:#737B85; text-transform:uppercase; letter-spacing:.08em; font-weight:700;}
+    .stat-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#F4F6F8; font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin:.12rem 0;}
+    .stat-detail {font-size:.85rem; color:#A9B0B8;}
+    .climate {border-left:2px solid #2FA36B; padding:.25rem 0 .25rem 1.25rem; margin:2rem 0 .7rem;}
+    .climate-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#F4F6F8; font-size:clamp(2.8rem, 5vw, 4.2rem); line-height:1; font-weight:800; letter-spacing:-.065em; margin:.35rem 0;}
+    .reason {display:flex; gap:.7rem; align-items:flex-start; border-top:1px solid #2A313A; padding:.85rem 0; color:#A9B0B8; max-width:760px;}
+    .check {color:#39B97C; font-family:Manrope, Inter, sans-serif; font-weight:800;}
+    .path-status {display:flex; justify-content:space-between; border-top:1px solid #2A313A; padding:.7rem 0; font-size:.92rem;}
+    .path-status strong {font-family:Manrope, Inter, sans-serif; color:#F4F6F8;}
+    .path-status span {color:#A9B0B8;}
 </style>
 """, unsafe_allow_html=True)
 CFG = load_config(DATA / "assumptions.csv")
@@ -215,8 +217,10 @@ def example_picker():
 
 def planner_workspace():
     st.markdown('<div class="section-label">Waste</div>', unsafe_allow_html=True)
-    st.number_input("Weekly food waste", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
-    st.caption("kg/week")
+    waste_input, _ = st.columns([1, 3.2])
+    with waste_input:
+        st.number_input("Weekly food waste", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
+        st.caption("kg/week")
     version = st.session_state.editor_version
     with st.expander("Estimate from tenants →"):
         tenants = st.data_editor(st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic", width="stretch", column_config={
@@ -228,7 +232,7 @@ def planner_workspace():
         })
 
     st.subheader("General waste service")
-    a, b, c = st.columns(3)
+    a, b, c, _ = st.columns([1, 1, 1, 1.2])
     a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size", help="Used to check your likely NSW FOGO requirement.",
                 format_func=lambda value: f"{value} L")
     b.number_input("Number of bins", min_value=1, step=1, key="bin_count")
@@ -254,10 +258,10 @@ def planner_workspace():
                            "count": st.session_state.bin_count,
                            "collections_per_week": st.session_state.bin_collections}])
 
-    st.markdown('<div class="section-label">Site</div>', unsafe_allow_html=True)
-    a, b, c = st.columns(3)
-    a.number_input("On-site processing space (m²)", min_value=0.0, step=1.0, key="space_m2")
-    b.radio("Can processed material be used on-site or nearby?", ["Yes", "No"], horizontal=True, key="local_use")
+    st.markdown('<div class="section-label">On-site capability</div>', unsafe_allow_html=True)
+    a, b, c, _ = st.columns([1, 1.35, 1, 1.15])
+    a.number_input("Space (m²)", min_value=0.0, step=1.0, key="space_m2")
+    b.radio("Local use", ["Yes", "No"], horizontal=True, key="local_use", help="Can processed material be used on site or nearby?")
     c.selectbox("Equipment budget", ["low", "medium", "high"],
                 format_func=lambda key: f"{key.title()} · {BUDGET_LABELS[key]}", key="budget")
 
@@ -289,7 +293,9 @@ def planner_workspace():
 
 
 def input_page():
-    st.title("Find the right food-waste setup for your building.")
+    st.markdown('<div class="plan-eyebrow">Plan your food waste</div>', unsafe_allow_html=True)
+    st.markdown("<h1>Find the right setup<br>for your building.</h1>", unsafe_allow_html=True)
+    st.caption("Off-site FOGO · Hybrid · On-site")
     planner_workspace()
     example_picker()
 
@@ -421,6 +427,7 @@ def overview_tab(result):
         st.markdown('<div class="plan-eyebrow">Your plan</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="pathway">{escape(rec["label"])}</div>', unsafe_allow_html=True)
         st.caption("Recommended pathway")
+        st.markdown(f'<div class="result-note">{pathway_summary(rec["pathway"])}</div>', unsafe_allow_html=True)
     with status:
         st.markdown(mandate_status(result["mandate"]), unsafe_allow_html=True)
 
