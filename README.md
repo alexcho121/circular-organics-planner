@@ -1,210 +1,480 @@
 # Circular Organics Planner
 
-**A practical decision tool for food-waste planning in NSW shared food buildings.**
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20Planner-23865B?style=for-the-badge)](https://circular-organics-planner.streamlit.app/)
+[![Tests](https://img.shields.io/badge/tests-23%20passing-2C9A69?style=flat-square)](tests/test_engine.py)
 
-Circular Organics Planner compares three food-waste pathways — **Off-site FOGO, Hybrid, and On-site processing** — and recommends a practical setup based on waste volume, available space, local reuse, budget, and NSW food-organics requirements.
+**From NSW food-waste rules to a building-level operating plan.**
 
-Built for **Climate Hack-tion 2026 — Build for 2035**, Zero Waste & Methane Reduction.
+Circular Organics Planner helps managers of shared food buildings compare **Off-site FOGO, Hybrid and On-site processing**, then turns that decision into a practical plan: waste allocation, bins, collections, trade-offs and the next decision point on the way to 2035.
 
-> Planning guidance only. Final compliance, equipment and site decisions should be checked against current NSW EPA guidance, council requirements and site-specific conditions.
+Built for **Climate Hack-tion 2026 — Build for 2035**  
+Challenge area: **Zero Waste & Methane Reduction**
 
----
-
-## The problem
-
-Food waste sent to landfill produces methane, but choosing an alternative is not as simple as selecting the option with the lowest emissions.
-
-A building manager may need to consider:
-
-- whether the site is likely covered by NSW food-organics requirements
-- how much food waste the building generates
-- available bin and processing space
-- collection frequency
-- whether processed material can be used locally
-- budget and operational effort
-- how the building may change by 2035
-
-Existing guidance provides the rules and data, but turning them into a practical site plan can still take time.
-
-**Circular Organics Planner turns those inputs into a clear recommendation and implementation plan.**
+### [Open the live planner →](https://circular-organics-planner.streamlit.app/)
 
 ---
 
-## What the planner does
+## The decision nobody gives building managers
 
-The app guides the user through five questions:
+NSW can tell a food business **when food waste needs to be separated**.
 
-1. **Is the site likely covered by the NSW food-organics mandate?**
-2. **Which of the three pathways fits the building?**
-3. **Why is that pathway recommended?**
-4. **What should the building actually do?**
-5. **Will that recommendation still make sense by 2035?**
+But a facility manager still has to decide:
 
-The three pathways are:
+- Off-site FOGO, Hybrid or On-site processing?
+- How much waste should stay on site?
+- How many bins are needed?
+- How often should they be collected?
+- What are the operational and climate trade-offs?
+- When should the building reconsider that choice as it grows?
 
-| Pathway | Description |
-|---|---|
-| **Off-site FOGO** | Separate food waste and send it to an external organics processor. |
-| **Hybrid** | Process part of the food waste on site and send the remainder off site. |
-| **On-site** | Process most food waste on site, subject to space, budget, reuse and site requirements. |
+The problem is not simply getting another bin.
 
-The goal is not simply to maximise on-site processing.
+It is turning policy, waste volume, space, budget and operational constraints into a setup that can actually work.
 
-**Most of the methane benefit comes from keeping food waste out of landfill. The pathway decision is about finding a setup that can realistically work for the building.**
+**Circular Organics Planner fills the gap between policy guidance and vendor procurement.**
 
 ---
 
-## What the user gets
+## One input flow. One operating plan.
 
-After entering a small set of building and waste inputs, the planner returns:
+```text
+Building inputs
+      ↓
+NSW mandate check
+      ↓
+3-pathway simulation
+      ↓
+Transparent recommendation
+      ↓
+Implementation plan
+      ↓
+Trade-off analysis
+      ↓
+Next decision point
+      ↓
+2035 roadmap
+      ↓
+Evidence & sources
+```
 
+The planner returns:
+
+- likely NSW FOGO timing
 - recommended pathway
-- NSW mandate status
 - on-site and off-site waste allocation
 - required FOGO bins
-- collection frequency
-- estimated landfill methane avoided
-- estimated net GHG impact
+- collection frequency and days
+- indicative collection cost
+- landfill methane avoided
+- modelled net GHG impact
 - recommendation reasons
-- implementation steps
-- 2035 outlook
-
-Detailed assumptions, sources and technical comparisons are available when the user wants to inspect them.
+- trade-offs against the main alternative
+- next decision point toward 2035
+- assumptions, ranges and source links
 
 ---
 
-## Who it is for
+# Demo result — 1,000 kg/week food court
 
-The current MVP is designed for **NSW buildings where several food businesses share a waste service**, such as:
+Our main demo is an illustrative shopping-centre food court generating **1,000 kg of food waste per week**, with 10 m² of on-site processing space, a local use for processed material and a Medium equipment budget.
+
+| Decision | Result |
+|---|---|
+| **Recommended pathway** | **Hybrid** |
+| NSW status | Likely covered now |
+| Captured food waste | 700 kg/week |
+| Processed on site | **350 kg/week** |
+| Sent off site | **350 kg/week** |
+| FOGO setup | **2 × 240 L bins** |
+| Collections | **4/week** |
+| Bin lifts | **8/week** |
+| Landfill methane avoided | **1,911 kg CH₄/year** base |
+| Hybrid net GHG saving | ~**37 t CO₂e/year** |
+
+### Why Hybrid?
+
+Compared with Off-site FOGO, the Hybrid setup gives this building:
+
+- **8 fewer bin lifts per week**
+- about **$270.81/week lower indicative collection cost**
+- a local use for part of the processed output
+
+But the planner does **not** hide the downside.
+
+> **Climate trade-off:** Off-site FOGO has the higher modelled net GHG saving in this example — approximately **46 vs 37 t CO₂e/year**.
+
+That is intentional.
+
+The planner is not trying to make one pathway win every metric. It helps the manager see the operational and environmental trade-offs before making a decision.
+
+---
+
+## Why this is different
+
+### It does not automatically prefer on-site processing
+
+A small or constrained building can still receive **Off-site FOGO** as the recommendation.
+
+On-site processing only becomes a candidate when the existing volume, space, budget and operational conditions support it.
+
+### It is not a black-box recommendation
+
+The planner uses **six explicit decision rules — R0 to R5**.
+
+The user can inspect:
+
+- which rules fired
+- why the selected pathway was recommended
+- why another pathway was not selected
+- what would need to change for the recommendation to change
+
+### It compares before it recommends
+
+All three pathways are simulated before the final plan is shown.
+
+The comparison includes:
+
+- on-site / off-site kg
+- bins
+- collections
+- bin lifts
+- indicative collection cost
+- space
+- operational effort
+- equipment budget
+- methane avoided
+- net GHG impact
+
+### It shows trade-offs instead of hiding them
+
+The recommended pathway does not have to be best on every metric.
+
+That is important for real facility decisions.
+
+### It looks beyond today
+
+The planner identifies the **next decision point** rather than producing only a one-time answer.
+
+---
+
+# Build for 2035
+
+The challenge is not only deciding what works today.
+
+It is understanding **when the building should reconsider that decision**.
+
+For the 1,000 kg/week demo building:
+
+```text
+HYBRID TODAY
+     │
+     │ 5% annual food-waste growth
+     ▼
+~1,551 kg/week by 2035
+     │
+     ▼
+1,500 kg/week volume threshold crossed
+     │
+     ▼
+ON-SITE becomes a candidate only if
+other conditions are also satisfied
+```
+
+Crossing the volume threshold does **not** automatically change the recommendation.
+
+Under the current Case 2 conditions, On-site would still require:
+
+- at least **15 m² of on-site space**
+- a **High** equipment budget
+- the other existing pathway conditions to remain satisfied
+
+The current site has only 10 m² and a Medium budget, so the planner continues to show **Hybrid** under those unchanged conditions.
+
+This makes the roadmap a decision tool rather than a simple growth chart.
+
+---
+
+# Evidence, not hidden assumptions
+
+The model is intentionally inspectable.
+
+| Evidence | Current model |
+|---|---:|
+| Assumption rows | **39** |
+| Unique source IDs directly linked from `assumptions.csv` | **11** |
+| High-confidence assumptions | **9** |
+| Medium-confidence assumptions | **10** |
+| Low-confidence / team assumptions | **20** |
+| Full project research set | **23 references** |
+
+Each assumption can include:
+
+- minimum value
+- base value
+- maximum value
+- unit
+- source ID
+- source URL
+- confidence level
+- notes
+
+The app exposes these values through **Data & Sources** rather than hiding them inside the code.
+
+Government and public-sector sources are preferred where suitable. Vendor sources are used for indicative equipment sizing and pricing only, not as NSW Government requirements or endorsements.
+
+Team assumptions are explicitly identified.
+
+> Where measured site data exists, it should replace generic estimates. A weighed food-waste audit is more reliable than estimating waste from tenant type.
+
+---
+
+# How the decision engine works
+
+```text
+Input
+  │
+  ▼
+Waste Stream Profile
+  │
+  ▼
+NSW Mandate Check
+  │
+  ▼
+Off-site ─ Hybrid ─ On-site
+      scenario simulation
+  │
+  ▼
+R0–R5 Recommendation
+  │
+  ▼
+Implementation Plan
+  │
+  ├── Trade-off Analysis
+  │
+  ├── Next Decision Point
+  │
+  └── 2035 Roadmap
+```
+
+The final pathway decision is **rule-based**, not generated by an AI model.
+
+### Recommendation rules
+
+| Rule | Condition | Result |
+|---|---|---|
+| **R0** | Default | Off-site FOGO |
+| **R1** | On-site space under 6 m² | Hybrid and On-site excluded |
+| **R2** | ≥500 kg/week, ≥6 m², local use, Medium/High budget | Hybrid candidate |
+| **R3** | ≥1,500 kg/week, ≥15 m², High budget | On-site candidate |
+| **R4** | On-site candidate but no local use | Return to Off-site FOGO |
+| **R5** | Off-site requires high collection frequency and Hybrid reduces it | Advisory note |
+
+The planner selects the highest pathway whose conditions are satisfied and then applies the remaining rules.
+
+These thresholds are **planning rules**, not laws or guaranteed economic break-even points.
+
+Numeric assumptions and thresholds are kept in the project data layer rather than scattered through the UI.
+
+---
+
+# Implementation planning
+
+The recommendation is converted into a practical operating plan.
+
+For each pathway the engine calculates:
+
+- captured food waste
+- kg processed on site
+- kg sent off site
+- required FOGO bins
+- collections per week
+- collection days
+- bin lifts per week
+- bin footprint
+- indicative collection cost
+- landfill methane avoided
+- net GHG saving
+
+The collection planner also considers the longest gap between services rather than only dividing total weekly waste by bin capacity.
+
+---
+
+# Climate impact
+
+The planner deliberately separates two climate metrics.
+
+### Landfill methane avoided
+
+Shows the estimated methane avoided by keeping captured food waste out of landfill.
+
+Because the same captured food waste is diverted in all three scenarios, methane avoided can be similar across pathways.
+
+### Net GHG saving
+
+Accounts for the modelled emissions associated with the processing pathway itself.
+
+That means one pathway can reduce operational collection pressure while another has a better modelled GHG result.
+
+The tool shows both.
+
+Ranges are **planning scenarios**, not statistical confidence intervals.
+
+---
+
+# Validation
+
+The current engine has:
+
+## **23 automated tests passing**
+
+They cover:
+
+- R0–R5 recommendation behaviour
+- NSW mandate thresholds
+- exact boundary cases
+- tenant waste estimation
+- measured-value overrides
+- collection planning
+- 2035 roadmap behaviour
+- worked emissions cross-check
+- Case 1 regression
+- Case 2 regression
+- signed trade-off calculations
+- next-decision-point constraints
+- evidence-summary calculations
+
+### Case 1
+
+Small café building:
+
+- **Off-site FOGO**
+- 2 × 240 L bins
+- 4 collections/week
+- **669 kg CH₄/year** base landfill methane avoided
+
+### Case 2
+
+Shopping-centre food court:
+
+- **Hybrid**
+- 350 kg/week on site
+- 350 kg/week off site
+- 2 × 240 L bins
+- 4 collections/week
+- **1,911 kg CH₄/year** base landfill methane avoided
+
+Automated tests validate the software behaviour and internal model consistency. They are not a substitute for real-world pilot validation.
+
+---
+
+# Try it
+
+## Live application
+
+### https://circular-organics-planner.streamlit.app/
+
+For the clearest demonstration:
+
+1. Open the planner.
+2. Load the **Shopping centre** example.
+3. Run **Compare pathways**.
+4. Review the Hybrid recommendation.
+5. Check the Trade-off section.
+6. Check the Build for 2035 decision point.
+7. Open Data & Sources to inspect the assumptions.
+
+No installation is required.
+
+---
+
+# Who it is for
+
+The current MVP focuses on **NSW buildings where multiple food businesses share a waste service**, including:
 
 - shopping-centre food courts
 - university food precincts
-- mixed food retail buildings
-- other shared commercial food facilities
+- mixed food-retail buildings
+- shared commercial food facilities
 
-The main user is the **building or facility manager responsible for the shared waste service**.
+The main user is the **facility or building manager responsible for the shared waste service**.
 
----
-
-## How it works
-
-The planner uses a transparent rule-based decision engine rather than a black-box AI recommendation.
-
-```text
-Building & waste inputs
-        ↓
-Waste stream profile
-        ↓
-NSW mandate check
-        ↓
-Off-site / Hybrid / On-site comparison
-        ↓
-Recommendation
-        ↓
-Implementation plan
-        ↓
-2035 projection
-```
-
-Recommendation thresholds and model assumptions are stored outside the core logic in the project data files.
-
-This makes the recommendation easier to explain, inspect and update when better data becomes available.
+The planner is intended to support the stage before a manager requests vendor quotes or commits to equipment.
 
 ---
 
-## Example outcomes
+# Important limitations
 
-### Small food building
-
-A small building with limited space and no local use for processed material is likely to remain better suited to **Off-site FOGO**.
-
-### Larger food court
-
-A larger food court with sufficient waste volume, some processing space and a local use for output may be better suited to a **Hybrid** model.
-
-In the project example, the Hybrid pathway reduces external bin lifts while still diverting the full food-waste stream from landfill.
-
-The app also shows cases where the pathway with the highest modelled GHG saving is not necessarily the recommended operational pathway. The purpose of the tool is to make those trade-offs visible rather than hide them.
-
----
-
-## Built for 2035
-
-The planner does not only evaluate today's setup.
-
-It can project food-waste growth and show whether the recommended pathway remains suitable as the site approaches **2035**.
-
-This helps building managers see whether their current plan is:
-
-- likely to remain suitable
-- approaching a Hybrid transition point
-- approaching the space and budget requirements for full On-site processing
-
-The roadmap is intentionally simple and is designed for early planning rather than long-term forecasting.
-
----
-
-## Transparent assumptions
-
-The model keeps assumptions separate from the recommendation code.
-
-The project data includes:
-
-- minimum, base and maximum values
-- source links where available
-- confidence levels
-- team assumptions clearly identified as assumptions
-
-Examples include:
-
-- food-waste estimates
-- FOGO bin capacity
-- collection cost
-- methane factors
-- GHG factors
-- processing capacity
-- space requirements
-- budget ranges
-
-Where measured site data is available, it should replace generic estimates.
-
-For example, a **seven-day weighed food-waste audit** is more reliable than estimating waste from tenant type.
-
----
-
-## Important limitations
-
-This is a **planning tool, not a compliance determination**.
+Circular Organics Planner is a **planning and decision-support tool**, not a compliance determination, engineering design or legal opinion.
 
 Important limitations include:
 
-- NSW mandate results are shown as **likely** because exemptions and every site-specific condition are not fully modelled.
-- Tenant food-waste estimates are planning assumptions, not NSW averages.
-- Methane and GHG outputs are scenario estimates rather than statistical confidence intervals.
-- On-site processing still requires site-specific checks for approvals, ventilation, fire safety, trade waste and equipment suitability.
+- NSW mandate results are shown as **likely** because not every exemption or site-specific condition is modelled.
+- Tenant food-waste defaults are illustrative planning assumptions, not NSW averages.
+- A measured waste audit should replace estimated volumes wherever possible.
+- Methane and GHG outputs are scenario estimates, not statistical confidence intervals.
+- Some modelled GHG ranges can be negative.
+- Costs are indicative and should not replace supplier quotes.
+- On-site equipment requires site-specific checks including approvals, ventilation, fire safety and trade-waste requirements.
 - Processed food waste is not automatically usable compost.
-- Cost estimates are indicative and should not replace supplier quotes.
-- Space requirements are planning estimates and may not include all equipment clearance, storage or ventilation requirements.
-- The 2035 projection changes waste volume while keeping most other assumptions constant.
+- Space assumptions do not represent a full engineering site assessment.
+- The 2035 roadmap changes waste volume while most other site conditions remain fixed.
 
-The app exposes these assumptions so that users can understand where the recommendation comes from.
+These limitations are exposed deliberately so users can understand what the model can and cannot conclude.
 
 ---
 
-## Tech stack
+# Tech stack
+
+### Application
 
 - **Python**
 - **Streamlit**
 - **pandas**
 - **Altair**
-- **pytest**
-- **GitHub**
 
-The MVP uses a transparent rule-based engine rather than an AI model for the final pathway decision.
+### Validation
+
+- **pytest**
+
+### Deployment and collaboration
+
+- **GitHub**
+- **Streamlit Community Cloud**
+
+The final pathway decision uses the transparent Python rule engine rather than an AI recommendation model.
 
 ---
 
-## Run locally
+# Project structure
+
+```text
+circular-organics-planner/
+│
+├── app/
+│   ├── main.py              # Streamlit application
+│   └── engine.py            # Decision and planning engine
+│
+├── data/
+│   ├── assumptions.csv      # Model values, ranges, sources and confidence
+│   ├── examples.json        # Demo building inputs
+│   └── example_outputs.json # Regression/demo outputs
+│
+├── docs/
+│   └── SPEC.md              # Engine contract and decision rules
+│
+├── tests/
+│   └── test_engine.py       # Automated engine tests
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+The project keeps the application interface, decision engine, assumptions/evidence and validation tests separated.
+
+---
+
+# Run locally
 
 Clone the repository:
 
@@ -213,7 +483,7 @@ git clone https://github.com/alexcho121/circular-organics-planner.git
 cd circular-organics-planner
 ```
 
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```bash
 python3 -m venv .venv
@@ -226,78 +496,88 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run the app:
+Run the application:
 
 ```bash
 streamlit run app/main.py
 ```
 
----
+Run the tests:
 
-## Project structure
-
-```text
-circular-organics-planner/
-│
-├── app/
-│   ├── main.py
-│   └── engine.py
-│
-├── data/
-│   └── ...
-│
-├── tests/
-│   └── ...
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
+```bash
+pytest -q
 ```
 
-The final structure may be adjusted during the hackathon cleanup, but the project maintains a separation between:
+Current result:
 
-- application UI
-- decision engine
-- model assumptions and evidence
-- tests
-
----
-
-## Evidence and sources
-
-The planner is based primarily on NSW and Australian government guidance, environmental assessments and equipment specifications.
-
-Key source groups include:
-
-- NSW EPA — FOGO mandates and rollout
-- NSW EPA — business food-waste guidance
-- NSW EPA — organics-processing technology assessment
-- NSW EPA — mandate exemptions
-- Australian DCCEEW — food waste and National Waste Policy
-- UNFCCC — COP31
-- Global Methane Pledge
-- equipment and collection supplier specifications used only for indicative sizing and pricing
-
-The complete assumption list, source URLs and confidence ratings are maintained with the project data and are also accessible through the app's **Methodology & evidence** section.
-
-Vendor sources are used for indicative sizing and pricing only and do not represent NSW Government requirements or endorsements.
+```text
+23 passed
+```
 
 ---
 
-## Team
+# Data and source approach
+
+The planner draws primarily on:
+
+- NSW EPA FOGO mandate and rollout guidance
+- NSW EPA business food-waste guidance
+- NSW EPA organics-processing assessments
+- NSW EPA mandate exemptions
+- Australian DCCEEW waste-policy material
+- UNFCCC material
+- Global Methane Pledge material
+- equipment and collection-provider specifications for indicative sizing and pricing
+
+The model values and direct source links can be inspected in:
+
+[`data/assumptions.csv`](data/assumptions.csv)
+
+The engine and output contract are documented in:
+
+[`docs/SPEC.md`](docs/SPEC.md)
+
+Vendor sources are used for indicative planning only and do not represent NSW Government requirements or endorsements.
+
+---
+
+# Third-party tools and AI disclosure
+
+Development and collaboration tools used during the hackathon included:
+
+- Python
+- Streamlit
+- pandas
+- Altair
+- pytest
+- GitHub
+- Streamlit Community Cloud
+- Figma
+- Google Docs / Sheets / Drive
+
+AI tools were used to assist with drafting, coding, debugging and review during development.
+
+The team reviewed, modified and tested the final implementation.
+
+**AI is not used to choose the final food-waste pathway.**  
+The recommendation itself is produced by the transparent R0–R5 Python decision engine.
+
+---
+
+# Team
 
 | Member | Role |
 |---|---|
 | **Yuna Kim** | Lead, recommendation rules, testing and submission |
-| **Jongyoon Yoo** | UI/design, demo and README |
-| **Yeongjun Cho** | Decision engine and application |
+| **Jongyoon Yoo** | App design, Demo video and presentation support |
+| **Youngjun Cho** | Full application development, decision engine, frontend/UI, design implementation, README and deployment |
 | **Yeonsu Kim** | Research and data |
 
 ---
 
-## Hackathon
+# Hackathon
 
 **Climate Hack-tion 2026**  
-**Challenge:** Build for 2035 — Zero Waste & Methane Reduction
+**Build for 2035 — Zero Waste & Methane Reduction**
 
-The project was built as a hackathon MVP to demonstrate how existing policy, waste data and operational constraints can be turned into an explainable planning tool for building managers.
+Circular Organics Planner explores how policy, waste data and operational constraints can be turned into an explainable building-level decision tool — not just another waste calculator.
