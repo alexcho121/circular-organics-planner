@@ -5,6 +5,7 @@ All planning decisions and calculated values come from app.engine.
 import json
 import inspect
 import sys
+from html import escape
 from pathlib import Path
 
 import pandas as pd
@@ -22,23 +23,55 @@ from app.engine import (  # noqa: E402
 st.set_page_config(page_title="Circular Organics Planner", layout="wide")
 st.markdown("""
 <style>
-    .stMainBlockContainer {max-width: 1040px; padding-top: 2.5rem; padding-bottom: 4rem;}
-    h1, h2, h3 {letter-spacing: -0.025em; color: #1f3829;}
-    h1 {font-size: clamp(2.35rem, 5vw, 4rem); line-height: 1.02;}
-    h2 {margin-top: 1.5rem;}
-    [data-testid="stSidebar"] {background: #e9ede5; border-right: 1px solid #d7ddd4;}
-    [data-testid="stMetric"] {background: #ffffff; border: 1px solid #dce2da; border-radius: 14px; padding: 1rem 1.1rem;}
-    [data-testid="stMetricLabel"] {color: #587063;}
-    [data-testid="stMetricValue"] {color: #1f3829;}
-    .stButton > button[kind="primary"] {border-radius: 999px; padding: .65rem 1.5rem; font-weight: 650;}
-    .stButton > button[kind="secondary"] {border-radius: 999px;}
-    [data-testid="stAlert"] {border-radius: 12px;}
-    hr {border-color: #dce2da; margin: 2rem 0;}
-    .eyebrow {color:#557a62; font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;}
-    .lead {font-size:1.2rem; line-height:1.55; max-width:700px; color:#4f6156;}
-    .step {color:#66766c; font-size:.9rem; font-weight:600; margin-bottom:.5rem;}
-    .pathway {font-size:clamp(3rem, 8vw, 5.5rem); line-height:1; color:#294f37; font-weight:750; letter-spacing:-.055em; margin:.2rem 0 .75rem;}
-    .result-note {font-size:1.1rem; line-height:1.5; color:#46594d; max-width:760px;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap');
+    #MainMenu, footer {visibility: hidden;}
+    header[data-testid="stHeader"] {background: transparent;}
+    [data-testid="stSidebar"] {display: none;}
+    .stApp {background: #F7F7F3; color: #17201B; font-family: Inter, Arial, sans-serif;}
+    .stMainBlockContainer {max-width: 1240px; padding-top: 1.35rem; padding-bottom: 4.5rem;}
+    h1, h2, h3 {font-family: Manrope, Inter, Arial, sans-serif; letter-spacing: -.035em; color: #17201B;}
+    h1 {font-size: clamp(2.4rem, 4.5vw, 4.2rem); line-height: 1.05; margin-bottom: .7rem;}
+    h2 {font-size: 1.55rem; margin-top: 1.9rem;}
+    h3 {font-size: 1.05rem; letter-spacing: -.015em;}
+    p, li {color: #3f4943; line-height: 1.6;}
+    hr {border-color: #E2E6E3; margin: 2.25rem 0;}
+    .eyebrow {color:#B89B5E; font-family: Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+    .lead {font-size:1.12rem; line-height:1.65; max-width:760px; color:#6C756F;}
+    .brand {font-family: Manrope, Inter, sans-serif; font-weight:800; font-size:1rem; color:#17201B; letter-spacing:-.025em; padding:.48rem 0 1.25rem;}
+    .workspace-note {border-left:2px solid #B89B5E; padding: .15rem 0 .15rem 1.2rem; margin: .75rem 0 1.5rem;}
+    .guide {background:#FFFFFF; border:1px solid #E2E6E3; border-radius:12px; padding:1.5rem; margin-top:1.1rem;}
+    .guide-title {font-family:Manrope, Inter, sans-serif; font-weight:800; color:#17201B; margin:.15rem 0 1.1rem;}
+    .guide-row {display:flex; gap:.8rem; margin:1rem 0; color:#6C756F; line-height:1.45; font-size:.92rem;}
+    .guide-number {font-family:Manrope, Inter, sans-serif; color:#B89B5E; font-weight:800; font-size:.75rem; letter-spacing:.06em; padding-top:.08rem;}
+    .guide strong {display:block; color:#17201B; font-size:.9rem; margin-bottom:.13rem;}
+    .stButton > button {border-radius:8px; border-color:#C9D1CC; font-family:Manrope, Inter, sans-serif; font-weight:700; min-height:2.55rem;}
+    .stButton > button[kind="primary"] {background:#1F5C45; border-color:#1F5C45; color:#fff; padding:.55rem 1.2rem;}
+    .stButton > button[kind="primary"]:hover {background:#174735; border-color:#174735;}
+    .stButton > button[kind="secondary"] {background:transparent; color:#1F5C45;}
+    div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#C9D1CC; border-radius:8px; background:#fff;}
+    [data-testid="stDataFrame"], [data-testid="stDataEditor"] {border:1px solid #E2E6E3; border-radius:8px; overflow:hidden;}
+    [data-testid="stExpander"] {background:#FFFFFF; border:1px solid #E2E6E3; border-radius:8px;}
+    [data-testid="stAlert"] {border-radius:8px;}
+    .stTabs [data-baseweb="tab-list"] {gap:1.7rem; border-bottom:1px solid #E2E6E3;}
+    .stTabs [data-baseweb="tab"] {padding:.55rem 0 .65rem; height:auto; font-family:Manrope, Inter, sans-serif; font-size:.9rem; font-weight:700; color:#6C756F;}
+    .stTabs [aria-selected="true"] {color:#1F5C45; border-bottom:2px solid #1F5C45;}
+    .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3.2rem, 7vw, 5.8rem); line-height:.95; color:#17201B; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
+    .result-note {font-size:1.08rem; line-height:1.55; color:#6C756F; max-width:690px;}
+    .status {border-left:2px solid #1F5C45; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#3f4943; font-size:.9rem; line-height:1.45;}
+    .status strong {color:#1F5C45;}
+    .allocation {margin:1.1rem 0 1.8rem;}
+    .allocation-labels {display:flex; justify-content:space-between; gap:1rem; color:#6C756F; font-size:.83rem; margin-bottom:.55rem;}
+    .allocation-labels strong {color:#17201B; font-family:Manrope, Inter, sans-serif;}
+    .allocation-bar {display:flex; height:12px; border-radius:99px; overflow:hidden; background:#EAF1ED;}
+    .allocation-onsite {background:#1F5C45;}.allocation-offsite {background:#B89B5E;}
+    .stat {border-top:1px solid #E2E6E3; padding-top:.8rem; margin-top:.25rem;}
+    .stat-label {font-size:.76rem; color:#6C756F; text-transform:uppercase; letter-spacing:.08em; font-weight:700;}
+    .stat-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#17201B; font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin:.12rem 0;}
+    .stat-detail {font-size:.85rem; color:#6C756F;}
+    .climate {background:#EAF1ED; border-radius:10px; padding:1.5rem 1.6rem; margin:1.8rem 0 .7rem;}
+    .climate-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#1F5C45; font-size:clamp(2.8rem, 5vw, 4.2rem); line-height:1; font-weight:800; letter-spacing:-.065em; margin:.35rem 0;}
+    .reason {display:flex; gap:.7rem; align-items:flex-start; border-top:1px solid #E2E6E3; padding:.85rem 0; color:#3f4943;}
+    .check {color:#2E6B4F; font-family:Manrope, Inter, sans-serif; font-weight:800;}
 </style>
 """, unsafe_allow_html=True)
 CFG = load_config(DATA / "assumptions.csv")
@@ -90,7 +123,7 @@ def initialise_state():
         "total_kg": 0.0, "current_collections": 0, "room_m2": 10.0,
         "space_m2": 0.0, "cost_week": 0.0, "local_use": "No", "budget": "low",
         "growth": 0.0, "tenants_df": tenant_frame(), "bins_df": bin_frame(),
-        "show_results": False, "input_step": "waste", "editor_version": 0,
+        "show_results": False, "view": "planner", "editor_version": 0,
         "multiple_bin_types": False, "bin_size": 240, "bin_count": 2,
         "bin_collections": 2,
     }
@@ -122,7 +155,7 @@ def load_example(key):
         "bin_collections": int(example["general_waste_bins"][0]["collections_per_week"]),
         "multiple_bin_types": len(example["general_waste_bins"]) > 1,
         "editor_version": st.session_state.editor_version + 1,
-        "show_results": False, "input_step": "waste",
+        "show_results": False, "view": "planner",
     })
 
 
@@ -182,49 +215,22 @@ def example_picker():
         st.caption("Examples use illustrative data.")
 
 
-def waste_step():
-    st.markdown('<div class="step">Step 1 of 2 · Waste</div>', unsafe_allow_html=True)
-    st.header("How much food waste does your building generate?")
-    st.write("Use a measured weekly figure if you have one.")
-    st.number_input(
-        "Food waste", min_value=0.0, step=10.0, key="total_kg",
-        help="Leave at zero to estimate from tenants.",
-        label_visibility="collapsed",
-    )
-    st.caption("kg per week")
+def planner_workspace():
+    st.subheader("Building inputs")
+    st.markdown('<div class="workspace-note">Enter a measured weekly food-waste figure where available. The planner can estimate from tenants if you do not yet have an audit.</div>', unsafe_allow_html=True)
+    st.number_input("Weekly food waste (kg)", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
     version = st.session_state.editor_version
     with st.expander("Estimate from tenants"):
-        tenants = st.data_editor(
-            st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic",
-            width="stretch",
-            column_config={
-                "Tenant": st.column_config.TextColumn(required=True),
-                "Type": st.column_config.SelectboxColumn(options=list(TENANT_TYPES.values()), required=True),
-                "Size": st.column_config.SelectboxColumn(
-                    options=["Small", "Medium", "Large"], required=True),
-                "Count": st.column_config.NumberColumn(min_value=1, step=1, required=True),
-                "Measured kg/week": st.column_config.NumberColumn(
-                    min_value=0, help="Optional weighed amount per tenant; replaces the type estimate."),
-            },
-        )
-        st.caption("Tenant estimates are illustrative. A seven-day weighed audit gives a better input.")
-    st.session_state.tenants_draft = tenants
-    if st.button("Continue to site details", type="primary"):
-        provisional = collect_inputs(tenants, bin_frame())
-        if waste_profile(provisional, CFG)["total_kg_week"] <= 0:
-            st.error("Enter weekly food waste or add at least one tenant estimate.")
-        else:
-            st.session_state.tenants_df = tenants
-            st.session_state.input_step = "site"
-            st.rerun()
-    example_picker()
+        tenants = st.data_editor(st.session_state.tenants_df, key=f"tenants_{version}", num_rows="dynamic", width="stretch", column_config={
+            "Tenant": st.column_config.TextColumn(required=True),
+            "Type": st.column_config.SelectboxColumn(options=list(TENANT_TYPES.values()), required=True),
+            "Size": st.column_config.SelectboxColumn(options=["Small", "Medium", "Large"], required=True),
+            "Count": st.column_config.NumberColumn(min_value=1, step=1, required=True),
+            "Measured kg/week": st.column_config.NumberColumn(min_value=0, help="Optional weighed amount; replaces the type estimate."),
+        })
+        st.caption("Tenant estimates are illustrative. A seven-day weighed audit provides a stronger input.")
 
-
-def site_step():
-    st.markdown('<div class="step">Step 2 of 2 · Site</div>', unsafe_allow_html=True)
-    st.header("What will work at your site?")
-    st.write("These details determine NSW mandate timing and which pathway fits.")
-    st.subheader("General waste service")
+    st.subheader("Current general-waste service")
     st.caption("Landfill bins only — exclude recycling and existing organics bins.")
     a, b, c = st.columns(3)
     a.selectbox("Bin size", [120, 240, 360, 660, 1100], key="bin_size",
@@ -233,7 +239,7 @@ def site_step():
     c.number_input("Collections per week", min_value=1, max_value=14, step=1,
                    key="bin_collections")
 
-    st.checkbox("Add another bin type", key="multiple_bin_types")
+    st.checkbox("+ Add another bin type", key="multiple_bin_types")
     if st.session_state.multiple_bin_types:
         st.caption("Add each general-waste bin type used at the building.")
         bins = st.data_editor(
@@ -273,12 +279,11 @@ def site_step():
         c.number_input("Waste room area (m²)", min_value=0.0, step=1.0, key="room_m2")
         a.slider("Expected annual food-waste change (%)", -5.0, 10.0, step=0.5,
                  key="growth")
-    back, submit = st.columns([1, 2])
-    if back.button("← Back"):
-        st.session_state.input_step = "waste"
-        st.rerun()
-    if submit.button("Compare my options", type="primary", width="stretch"):
-        inputs = collect_inputs(st.session_state.tenants_df, bins)
+    if st.button("Compare pathways →", type="primary"):
+        inputs = collect_inputs(tenants, bins)
+        if waste_profile(inputs, CFG)["total_kg_week"] <= 0:
+            st.error("Enter weekly food waste or add at least one tenant estimate.")
+            return
         st.session_state.update({
             "inputs": inputs, "result": plan_building(inputs, CFG),
             "bins_df": bins, "show_results": True,
@@ -289,26 +294,27 @@ def site_step():
 
 
 def input_page():
-    st.markdown('<div class="eyebrow">Circular Organics Planner</div>', unsafe_allow_html=True)
-    st.title("Find the right food-waste setup for your building.")
+    st.markdown('<div class="eyebrow">NSW food-waste pathway planning</div>', unsafe_allow_html=True)
+    st.title("A clearer path for commercial food waste.")
     st.markdown(
-        '<div class="lead">Turn your waste volume and site conditions into a clear pathway, '
-        'a practical collection plan, and an estimate of landfill methane avoided.</div>',
+        '<div class="lead">Compare off-site FOGO, hybrid and on-site options using your building’s waste service and operating conditions.</div>',
         unsafe_allow_html=True,
     )
-    st.markdown("---")
-    if st.session_state.input_step == "waste":
-        waste_step()
-    else:
-        site_step()
+    workspace, guide = st.columns([1.85, 1], gap="large")
+    with workspace:
+        planner_workspace()
+    with guide:
+        st.markdown("""
+        <div class="guide"><div class="eyebrow">Decision brief</div><div class="guide-title">What this workspace compares</div>
+        <div class="guide-row"><div class="guide-number">01</div><div><strong>Pathways</strong>Off-site FOGO, hybrid processing and on-site processing.</div></div>
+        <div class="guide-row"><div class="guide-number">02</div><div><strong>Operational fit</strong>Waste volume, bin service, space, local use and budget.</div></div>
+        <div class="guide-row"><div class="guide-number">03</div><div><strong>Practical output</strong>A recommended setup, collection plan and evidence to take to procurement.</div></div></div>
+        """, unsafe_allow_html=True)
+        example_picker()
 
 
-def mandate_banner(mandate):
-    if mandate["status_code"] == "unknown":
-        st.info(mandate["status_text"])
-        return
-    message = f"**NSW FOGO status · {mandate['status_text']}**"
-    (st.warning if mandate["status_code"] == "covered_2026" else st.info)(message)
+def mandate_status(mandate):
+    return f'<div class="status"><strong>NSW FOGO ●</strong><br>{escape(mandate["status_text"])}</div>'
 
 
 def mandate_details(mandate):
@@ -429,26 +435,33 @@ def pathway_summary(pathway):
 
 def overview_tab(result):
     rec, plan = result["recommendation"], result["plan"]
-    st.markdown('<div class="eyebrow">Recommended pathway</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="pathway">{rec["label"]}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="result-note">{pathway_summary(rec["pathway"])}</div>',
-                unsafe_allow_html=True)
-    st.caption(f"{result['building_name'] or 'Your building'} · "
-               f"{result['waste_profile']['total_kg_week']:,.0f} kg food waste/week")
-    mandate_banner(result["mandate"])
+    hero, status = st.columns([3, 1], gap="large")
+    with hero:
+        st.markdown('<div class="eyebrow">Your plan</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pathway">{escape(rec["label"])}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="result-note">{pathway_summary(rec["pathway"])}</div>', unsafe_allow_html=True)
+        st.caption(f"{result['building_name'] or 'Your building'} · {result['waste_profile']['total_kg_week']:,.0f} kg food waste/week")
+    with status:
+        st.markdown(mandate_status(result["mandate"]), unsafe_allow_html=True)
 
-    st.subheader("Your plan at a glance")
-    a, b, c = st.columns(3)
-    a.metric("Processed on site", f"{plan['onsite_kg_week']:,.0f} kg/week")
-    b.metric("Sent off site", f"{plan['offsite_kg_week']:,.0f} kg/week")
-    c.metric("Methane avoided", f"{plan['ch4_avoided_kg_year']['base']:,.0f}")
-    c.caption("kg CH₄/year")
-    a, b = st.columns(2)
-    a.metric("FOGO bins", f"{plan['bins']} × {plan['bin_size_l']} L")
-    b.metric("Collections", f"{plan['collections_per_week']} per week")
+    total = plan["onsite_kg_week"] + plan["offsite_kg_week"]
+    onsite_pct = (plan["onsite_kg_week"] / total * 100) if total else 0
+    st.markdown('<div class="eyebrow">Waste allocation</div>', unsafe_allow_html=True)
+    st.markdown(f'''<div class="allocation"><div class="allocation-labels"><span><strong>{plan['onsite_kg_week']:,.0f} kg/week</strong><br>processed on site</span><span style="text-align:right"><strong>{plan['offsite_kg_week']:,.0f} kg/week</strong><br>sent off site</span></div><div class="allocation-bar"><div class="allocation-onsite" style="width:{onsite_pct:.2f}%"></div><div class="allocation-offsite" style="width:{100-onsite_pct:.2f}%"></div></div></div>''', unsafe_allow_html=True)
+
+    st.markdown('<div class="eyebrow">Operation</div>', unsafe_allow_html=True)
+    bins, collections, cost = st.columns(3)
+    bins.markdown(f'<div class="stat"><div class="stat-label">FOGO bins</div><div class="stat-value">{plan["bins"]} × {plan["bin_size_l"]} L</div><div class="stat-detail">planned container service</div></div>', unsafe_allow_html=True)
+    collections.markdown(f'<div class="stat"><div class="stat-label">Collections</div><div class="stat-value">{plan["collections_per_week"]}/week</div><div class="stat-detail">{" · ".join(plan["collection_days"])}</div></div>', unsafe_allow_html=True)
+    cost.markdown(f'<div class="stat"><div class="stat-label">Indicative collection</div><div class="stat-value">${plan["collection_cost_aud_week"]:,.0f}</div><div class="stat-detail">AUD/week ex GST</div></div>', unsafe_allow_html=True)
+
+    methane = plan["ch4_avoided_kg_year"]
+    st.markdown(f'<div class="climate"><div class="eyebrow">Climate impact</div><div class="climate-value">{methane["base"]:,.0f}</div><div>kg CH₄/year of landfill methane avoided under the planning scenario.</div></div>', unsafe_allow_html=True)
+    with st.expander("View climate assumptions"):
+        st.write(f"Planning range: **{range_text(methane)} kg CH₄/year**. The range reflects the low, base and high values in the evidence sheet.")
 
     st.subheader("Why this pathway")
-    st.markdown("\n".join(f"- {reason}" for reason in rec["reasons"][:3]))
+    st.markdown("".join(f'<div class="reason"><span class="check">✓</span><span>{escape(reason)}</span></div>' for reason in rec["reasons"][:3]), unsafe_allow_html=True)
     if rec["r5_note"]:
         st.info(rec["r5_note"])
     with st.expander("What could change this recommendation?"):
@@ -495,10 +508,10 @@ def plan_tab(result):
                    f"{result['roadmap']['note']}")
 
 
-def evidence_tab(result):
+def compare_tab(result):
     rec = result["recommendation"]
-    st.header("Compare and verify")
-    st.write("A concise comparison first; technical calculations and sources remain available below.")
+    st.header("Compare pathways")
+    st.write("A concise operating view of the available options. The recommendation is marked in the matrix.")
     simple_comparison(result)
     with st.expander("View full technical comparison"):
         full_comparison(result, st.session_state.inputs["local_use"])
@@ -506,6 +519,12 @@ def evidence_tab(result):
         st.caption(f"Of {result['waste_profile']['total_kg_week']:,.0f} kg/week generated, "
                    f"{chosen['captured_kg_week']:,.0f} kg/week is expected to be separated and "
                    f"{chosen['uncaptured_kg_week']:,.0f} kg/week remains uncaptured.")
+    mandate_details(result["mandate"])
+
+
+def evidence_tab(result):
+    st.header("Evidence and methodology")
+    st.write("The recommendation rules, NSW mandate check and source assumptions used for this plan.")
     mandate_details(result["mandate"])
     profile = result["waste_profile"]
     if profile["tenants"]:
@@ -523,16 +542,17 @@ def results_page(result):
     if st.session_state.pop("scroll_to_result", False):
         scroll_to_top()
     top_left, top_right = st.columns([4, 1])
-    top_left.markdown('<div class="eyebrow">Circular Organics Planner</div>', unsafe_allow_html=True)
+    top_left.markdown('<div class="eyebrow">Decision output</div>', unsafe_allow_html=True)
     if top_right.button("← Edit inputs"):
         st.session_state.show_results = False
-        st.session_state.input_step = "waste"
         st.rerun()
-    overview, plan, evidence_view = st.tabs(["Overview", "Plan", "Evidence"])
+    overview, plan, compare, evidence_view = st.tabs(["Overview", "Plan", "Compare", "Evidence"])
     with overview:
         overview_tab(result)
     with plan:
         plan_tab(result)
+    with compare:
+        compare_tab(result)
     with evidence_view:
         evidence_tab(result)
 
@@ -564,10 +584,18 @@ Process most captured food waste on site, with a service for the remainder.
     st.caption("Built for Climate Hack-tion 2026 · Build for 2035. Planning guidance only; confirm legal duties with NSW EPA or your council.")
 
 
+def top_header():
+    brand, navigation = st.columns([6, 1])
+    brand.markdown('<div class="brand">Circular Organics Planner</div>', unsafe_allow_html=True)
+    label = "Planner" if st.session_state.view == "about" else "Methodology"
+    if navigation.button(label, key="header_navigation"):
+        st.session_state.view = "planner" if st.session_state.view == "about" else "about"
+        st.rerun()
+
+
 initialise_state()
-page = st.sidebar.radio("Menu", ["Planner", "About"])
-st.sidebar.caption("NSW food-waste decision tool")
-if page == "About":
+top_header()
+if st.session_state.view == "about":
     about_page()
 elif st.session_state.show_results and "result" in st.session_state:
     results_page(st.session_state.result)
