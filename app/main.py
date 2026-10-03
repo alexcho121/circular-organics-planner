@@ -41,9 +41,11 @@ st.markdown("""
     .brand {font-family: Manrope, Inter, sans-serif; font-weight:800; font-size:1rem; color:#F4F6F8; letter-spacing:-.025em; padding:.48rem 0 1.25rem;}
     .section-label {color:#A9B0B8; font-family:Manrope, Inter, sans-serif; font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin:2.3rem 0 .75rem;}
     .stButton > button {border-radius:9px; border-color:#3A424C; background:#1D232B; color:#F4F6F8; font-family:Manrope, Inter, sans-serif; font-weight:700; min-height:2.7rem;}
-    .stButton > button[kind="primary"] {background:#2FA36B; border-color:#2FA36B; color:#F4F6F8; min-height:3.1rem; padding:.65rem 1.35rem;}
-    .stButton > button[kind="primary"]:hover {background:#39B97C; border-color:#39B97C;}
+    .stButton > button[kind="primary"] {background:#23865B; border-color:#23865B; color:#F4F6F8; min-height:3.1rem; min-width:232px; padding:.65rem 1.35rem;}
+    .stButton > button[kind="primary"]:hover {background:#2C9A69; border-color:#2C9A69;}
     .stButton > button[kind="secondary"] {background:transparent; color:#A9B0B8; border-color:transparent;}
+    .st-key-load_example_button button {background:#1D232B !important; border-color:#3A424C !important; color:#F4F6F8 !important; min-height:2.55rem !important;}
+    .st-key-load_example_button button:hover {background:#252C35 !important; border-color:#4A5561 !important;}
     div[data-baseweb="input"], div[data-baseweb="select"] > div {border-color:#2A313A; border-radius:8px; background:#171C22; color:#F4F6F8; min-height:2.8rem;}
     div[data-baseweb="select"] span, div[data-baseweb="select"] svg {color:#F4F6F8; fill:#F4F6F8;}
     [data-testid="stNumberInput"] button {display:none;}
@@ -51,25 +53,27 @@ st.markdown("""
     [data-testid="stDataFrame"], [data-testid="stDataEditor"] {border:1px solid #2A313A; border-radius:8px; overflow:hidden;}
     [data-testid="stExpander"] {background:transparent; border:0; border-radius:0;}
     [data-testid="stExpander"] details {background:transparent !important; border:0 !important; border-radius:0 !important;}
-    [data-testid="stExpander"] summary {color:#A9B0B8; font-size:.9rem; padding:0 !important;}
+    [data-testid="stExpander"] summary {color:#A9B0B8; font-size:.86rem; padding:0 !important;}
+    [data-testid="stCheckbox"] {margin-top:.1rem;}
+    [data-testid="stCheckbox"] label {font-size:.78rem; color:#737B85;}
     [data-testid="stAlert"] {border-radius:8px; background:#171C22; border-color:#2A313A;}
     .pathway {font-family:Manrope, Inter, sans-serif; font-size:clamp(3.2rem, 7vw, 5.8rem); line-height:.95; color:#F4F6F8; font-weight:800; letter-spacing:-.07em; margin:.35rem 0 .8rem;}
     .result-note {font-size:1.08rem; line-height:1.55; color:#A9B0B8; max-width:520px;}
-    .status {border-left:2px solid #2FA36B; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#A9B0B8; font-size:.9rem; line-height:1.45;}
-    .status strong {color:#39B97C;}
+    .status {border-left:2px solid #23865B; padding:.2rem 0 .2rem .85rem; margin-top:1.45rem; color:#A9B0B8; font-size:.9rem; line-height:1.45;}
+    .status strong {color:#2C9A69;}
     .allocation {margin:1.1rem 0 1.8rem; max-width:760px;}
     .allocation-labels {display:flex; justify-content:space-between; gap:1rem; color:#A9B0B8; font-size:.83rem; margin-bottom:.55rem;}
     .allocation-labels strong {color:#F4F6F8; font-family:Manrope, Inter, sans-serif;}
     .allocation-bar {display:flex; height:12px; border-radius:99px; overflow:hidden; background:#2A313A;}
-    .allocation-onsite {background:#2FA36B;}.allocation-offsite {background:#B89B5E;}
+    .allocation-onsite {background:#23865B;}.allocation-offsite {background:#B89B5E;}
     .stat {border-top:1px solid #2A313A; padding-top:.8rem; margin-top:.25rem;}
     .stat-label {font-size:.76rem; color:#737B85; text-transform:uppercase; letter-spacing:.08em; font-weight:700;}
     .stat-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#F4F6F8; font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin:.12rem 0;}
     .stat-detail {font-size:.85rem; color:#A9B0B8;}
-    .climate {border-left:2px solid #2FA36B; padding:.25rem 0 .25rem 1.25rem; margin:2rem 0 .7rem;}
+    .climate {border-left:2px solid #23865B; padding:.25rem 0 .25rem 1.25rem; margin:2rem 0 .7rem;}
     .climate-value {font-family:Manrope, Inter, sans-serif; font-variant-numeric:tabular-nums; color:#F4F6F8; font-size:clamp(2.8rem, 5vw, 4.2rem); line-height:1; font-weight:800; letter-spacing:-.065em; margin:.35rem 0;}
     .reason {display:flex; gap:.7rem; align-items:flex-start; border-top:1px solid #2A313A; padding:.85rem 0; color:#A9B0B8; max-width:760px;}
-    .check {color:#39B97C; font-family:Manrope, Inter, sans-serif; font-weight:800;}
+    .check {color:#2C9A69; font-family:Manrope, Inter, sans-serif; font-weight:800;}
     .path-status {display:flex; justify-content:space-between; border-top:1px solid #2A313A; padding:.7rem 0; font-size:.92rem;}
     .path-status strong {font-family:Manrope, Inter, sans-serif; color:#F4F6F8;}
     .path-status span {color:#A9B0B8;}
@@ -212,11 +216,11 @@ def example_picker():
                                      else "Shopping centre food court"),
             label_visibility="collapsed",
         )
-        st.button("Load example", on_click=load_example, args=(choice,))
+        st.button("Load example", key="load_example_button", on_click=load_example, args=(choice,))
 
 
 def planner_workspace():
-    st.markdown('<div class="section-label">Waste</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Waste service</div>', unsafe_allow_html=True)
     waste_input, _ = st.columns([1, 3.2])
     with waste_input:
         st.number_input("Weekly food waste", min_value=0.0, step=10.0, key="total_kg", help="Leave at zero to estimate from the tenant mix below.")
@@ -260,9 +264,9 @@ def planner_workspace():
 
     st.markdown('<div class="section-label">On-site capability</div>', unsafe_allow_html=True)
     a, b, c, _ = st.columns([1, 1.35, 1, 1.15])
-    a.number_input("Space (m²)", min_value=0.0, step=1.0, key="space_m2")
+    a.number_input("On-site space (m²)", min_value=0.0, step=1.0, key="space_m2")
     b.radio("Local use", ["Yes", "No"], horizontal=True, key="local_use", help="Can processed material be used on site or nearby?")
-    c.selectbox("Equipment budget", ["low", "medium", "high"],
+    c.selectbox("Budget", ["low", "medium", "high"],
                 format_func=lambda key: f"{key.title()} · {BUDGET_LABELS[key]}", key="budget")
 
     with st.expander("Advanced details"):
@@ -473,7 +477,14 @@ def plan_tab(result):
     st.markdown("\n".join(f"{index}. {step}" for index, step in enumerate(plan["next_steps"], 1)))
 
     future = next(row for row in result["roadmap"]["rows"] if row["year"] == 2035)
-    st.markdown(f"**2035 outlook** — {future['pathway']} remains suitable at the projected {future['food_waste_kg_week']:,.0f} kg/week.")
+    current_pathway = result["recommendation"]["label"]
+    if current_pathway == future["pathway"]:
+        outlook = f"{current_pathway} remains suitable at the projected {future['food_waste_kg_week']:,.0f} kg/week."
+    else:
+        outlook = (f"The recommended pathway moves from {current_pathway} to "
+                   f"{future['pathway']} by 2035 at the projected "
+                   f"{future['food_waste_kg_week']:,.0f} kg/week.")
+    st.markdown(f"**2035 outlook** — {outlook}")
     with st.expander("Explore 2035 projection →"):
         roadmap = pd.DataFrame(result["roadmap"]["rows"])
         st.line_chart(roadmap.set_index("year")[["food_waste_kg_week"]])

@@ -122,7 +122,7 @@ def mandate_check(bins, cfg, growth_factor=1.0):
         text = "Likely covered from 1 July 2030"
     else:
         code, start, threshold = "below", None, t2030
-        text = "Below current thresholds (voluntary for now)"
+        text = "Below current NSW FOGO threshold levels"
     return {"capacity_l_week": round(capacity, 1), "branch": "240L" if all_240 else "other",
             "status_code": code, "start_year": start, "threshold_l_week": threshold,
             "status_text": text, "notes": MANDATE_NOTES}
@@ -390,7 +390,7 @@ def plan_building(inp, cfg):
         "plan": {**comparison[chosen], "pathway": chosen,
                  "collections_change": comparison[chosen]["collections_per_week"] - current,
                  "next_steps": next_steps(chosen, plans[chosen]),
-                 "local_use_line": ("Processed material can be used on site, for example in a rooftop garden."
+                 "local_use_line": ("Processed material has a local use on site or nearby."
                                     if local_use and chosen != "offsite" else None)},
         "roadmap": roadmap(inp, W, cfg),
         "budget_labels": budget_bands(cfg),

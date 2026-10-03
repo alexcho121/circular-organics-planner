@@ -528,7 +528,7 @@
         "Request FOGO collection for the remaining 350 kg/week (2 × 240 L, Mon · Wed · Fri · Sun).",
         "Agree where the processed output will be used, then weigh volumes for a month."
       ],
-      "local_use_line": "Processed material can be used on site, for example in a rooftop garden."
+      "local_use_line": "Processed material has a local use on site or nearby."
     },
     "roadmap": {
       "rows": [
