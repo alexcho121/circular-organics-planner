@@ -1,7 +1,7 @@
 # Circular Organics Planner
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20Planner-23865B?style=for-the-badge)](https://circular-organics-planner.streamlit.app/)
-[![Tests](https://img.shields.io/badge/tests-23%20passing-2C9A69?style=flat-square)](tests/test_engine.py)
+[![Tests](https://img.shields.io/badge/tests-23%20passing-2C9A69?style=flat-square)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-Deployed-FF4B4B?style=flat-square)](https://streamlit.io/)
 
@@ -119,7 +119,9 @@ The planner recommends:
 
 ### Why Hybrid?
 
-Compared with sending the captured food waste entirely through Off-site FOGO:
+The site meets the Hybrid rule (R2): at least 500 kg/week, at least 6 m² of space, a local use for processed material and a Medium budget.
+
+What that changes in practice: compared with sending the captured food waste entirely through Off-site FOGO:
 
 **Hybrid uses 8 fewer bin lifts per week.**
 
@@ -207,7 +209,7 @@ Operational convenience and climate impact do not always point to the same answe
 
 The planner keeps them visible separately.
 
-For example, the main demo recommends Hybrid because it substantially reduces external bin handling and collection cost under the current planning assumptions.
+For example, the main demo recommends Hybrid because the site meets the Hybrid rule (volume, space, local use and budget). The trade-off view then shows that Hybrid halves external bin lifts and collection cost under the current planning assumptions.
 
 At the same time, the app clearly shows that Off-site FOGO produces a higher modelled net GHG saving in that case.
 
@@ -272,7 +274,8 @@ The application is built on a separate evidence and assumptions layer rather tha
 | Evidence layer | Current project |
 |---|---:|
 | Configurable assumption rows | **39** |
-| Documented research sources | **23** |
+| Source IDs linked to values in `assumptions.csv` (shown in the app) | **11** |
+| Full documented research set ([docs/REFERENCES.md](docs/REFERENCES.md)) | **23** |
 | High-confidence values | **9** |
 | Medium-confidence values | **10** |
 | Low-confidence / team assumptions | **20** |
@@ -572,7 +575,7 @@ They do **not** replace real-world site validation.
 For the clearest demo:
 
 1. Open the live planner.
-2. Load the **Shopping centre** example.
+2. Open **Try a demo** and load the **Shopping centre food court** example.
 3. Run the comparison.
 4. Review the **Hybrid** recommendation.
 5. Check the operational **Trade-off**.
@@ -670,10 +673,16 @@ circular-organics-planner/
 │   └── example_outputs.json
 │
 ├── docs/
-│   └── SPEC.md
+│   ├── SPEC.md
+│   ├── REFERENCES.md
+│   └── test_cases.md
 │
 ├── tests/
-│   └── test_engine.py
+│   ├── test_engine.py
+│   └── test_examples.py
+│
+├── .streamlit/
+│   └── config.toml
 │
 ├── requirements.txt
 ├── README.md
@@ -704,9 +713,13 @@ Regression and frontend reference outputs.
 
 Engine contract, rule definitions and implementation decisions.
 
-### `tests/test_engine.py`
+### `tests/`
 
-Automated acceptance and regression tests.
+Automated acceptance tests (`test_engine.py`) and demo snapshot tests (`test_examples.py`).
+
+### `docs/REFERENCES.md`
+
+The full research source list (S1 to S23).
 
 ---
 
@@ -767,7 +780,7 @@ The research foundation draws primarily from:
 - Australian equipment specifications
 - Sydney collection-service pricing used for indicative planning
 
-The project research pack documents **23 sources**.
+The project research pack documents **23 sources**, listed in [`docs/REFERENCES.md`](docs/REFERENCES.md). The app's Data & sources section counts the 11 of them that are linked to specific values in `assumptions.csv`.
 
 The application configuration uses selected values from that research together with clearly labelled team planning assumptions.
 
@@ -815,7 +828,7 @@ It comes from the transparent **R0–R5 Python decision engine**.
 |---|---|
 | **Yuna Kim** | **Project coordination, decision rules, QA, submission** |
 | **Jongyoon Yoo** | **Figma design, demo script, video, QA** |
-| **Youngjun Cho** | **Full-stack app development, decision engine, UI implementation, deployment** |
+| **Youngjun Cho** | **Application development, decision engine, frontend/UI, deployment, README** |
 | **Yeonsu Kim** | **Research, evidence, assumptions and modelling data** |
 
 ---
