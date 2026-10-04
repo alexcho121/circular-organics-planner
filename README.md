@@ -848,8 +848,8 @@ It comes from the transparent **R0–R5 Python decision engine**.
 
 | Member | Contribution |
 |---|---|
-| **Yuna Kim** | **Project coordination, decision rules, QA, submission** |
-| **Jongyoon Yoo** | **Figma design, demo script, video, QA** |
+| **Yuna Kim** | **QA, bug testing, project coordination, decision rules, submission** |
+| **Jongyoon Yoo** | **Demo script, video, README draft, presentation** |
 | **Youngjun Cho** | **Application development, decision engine, frontend/UI, deployment, README** |
 | **Yeonsu Kim** | **Research, evidence, assumptions and modelling data** |
 
