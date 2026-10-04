@@ -22,7 +22,7 @@ Challenge area: **Zero Waste & Methane Reduction**
 
 Our COP31 priority area is **Zero Waste & Methane Reduction**.
 
-- Food in landfill produces methane: each tonne kept out of landfill avoids roughly **30 to 75 kg of landfill methane** (NSW EPA-commissioned assessment, S1).
+- Food in landfill produces methane: each tonne kept out of landfill avoids an estimated **30 to 75 kg of landfill methane**, based on modelled scenarios in an NSW EPA-commissioned assessment (S1).
 - Australia wastes around **7.6 million tonnes of food a year** (DCCEEW, S19).
 - Australia's national target is to **halve organic waste sent to landfill by 2030** (National Waste Policy Action Plan, S11).
 - The Global Methane Pledge aims to cut methane by **at least 30% from 2020 levels by 2030** (S20).
